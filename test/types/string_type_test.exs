@@ -22,4 +22,14 @@ defmodule Talos.Types.StringTypeTest do
     assert false == StringType.valid?(%StringType{}, DateTime.utc_now())
     assert false == StringType.valid?(%StringType{}, [])
   end
+
+  test "#valid? - other params" do
+    assert true == StringType.valid?(%StringType{length: 6}, "String")
+    assert false == StringType.valid?(%StringType{length: 7}, "String")
+    assert true == StringType.valid?(%StringType{max_length: 10}, "String")
+    assert false == StringType.valid?(%StringType{max_length: 3}, "String")
+    assert true == StringType.valid?(%StringType{min_length: 3}, "String")
+    assert false == StringType.valid?(%StringType{min_length: 3}, "")
+    assert true == StringType.valid?(%StringType{min_length: 0}, "")
+  end
 end

@@ -20,5 +20,6 @@ defmodule Talos.Types.ArrayTypeTest do
     assert true == ArrayType.valid?(%ArrayType{type: number_type}, [0, 1, 2])
 
     assert false == ArrayType.valid?(%ArrayType{type: number_type}, [-1000, 1, 2])
+    assert false == ArrayType.valid?(%ArrayType{type: number_type}, ["string"])
   end
 end

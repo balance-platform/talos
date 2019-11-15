@@ -1,12 +1,20 @@
 defmodule Talos.Types.StringType do
-  defstruct regexp: nil
+  defstruct [:min_length, :length, :max_length, :regexp]
   @behaviour Talos.Types
 
-  def valid?(%__MODULE__{regexp: nil}, value) do
-    String.valid?(value)
-  end
-
-  def valid?(%__MODULE__{regexp: regexp}, value) do
-    String.valid?(value) && Regex.match?(regexp, value)
+  def valid?(
+        %__MODULE__{regexp: regexp, min_length: min_len, length: len, max_length: max_len},
+        value
+      ) do
+    with true <- String.valid?(value),
+         str_len <- String.length(value),
+         true <- is_nil(min_len) || min_len <= str_len,
+         true <- is_nil(len) || len == str_len,
+         true <- is_nil(max_len) || str_len <= max_len,
+         true <- is_nil(regexp) || Regex.match?(regexp, value) do
+      true
+    else
+      false -> false
+    end
   end
 end
