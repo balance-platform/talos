@@ -1,4 +1,5 @@
 defmodule Talos.Types.ArrayType do
+  @moduledoc false
   defstruct [:type]
 
   @behaviour Talos.Types
