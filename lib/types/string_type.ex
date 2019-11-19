@@ -17,4 +17,11 @@ defmodule Talos.Types.StringType do
       false -> false
     end
   end
+
+  def errors(type, value) do
+    case valid?(type, value) do
+      true -> []
+      false -> [value: value]
+    end
+  end
 end

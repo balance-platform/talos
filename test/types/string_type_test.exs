@@ -32,4 +32,14 @@ defmodule Talos.Types.StringTypeTest do
     assert false == StringType.valid?(%StringType{min_length: 3}, "")
     assert true == StringType.valid?(%StringType{min_length: 0}, "")
   end
+
+  test "#errors - other params" do
+    assert [] == StringType.errors(%StringType{length: 6}, "String")
+    assert [value: "String"] == StringType.errors(%StringType{length: 7}, "String")
+    assert [] == StringType.errors(%StringType{max_length: 10}, "String")
+    assert [value: "String"] == StringType.errors(%StringType{max_length: 3}, "String")
+    assert [] == StringType.errors(%StringType{min_length: 3}, "String")
+    assert [value: ""] == StringType.errors(%StringType{min_length: 3}, "")
+    assert [] == StringType.errors(%StringType{min_length: 0}, "")
+  end
 end

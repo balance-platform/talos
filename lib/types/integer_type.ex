@@ -9,4 +9,11 @@ defmodule Talos.Types.IntegerType do
       value
     )
   end
+
+  def errors(type, value) do
+    case valid?(type, value) do
+      true -> []
+      false -> [value: value]
+    end
+  end
 end

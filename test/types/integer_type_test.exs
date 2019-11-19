@@ -29,4 +29,14 @@ defmodule Talos.Types.IntegerTest do
     assert false == IntegerType.valid?(%IntegerType{}, DateTime.utc_now())
     assert false == IntegerType.valid?(%IntegerType{}, [])
   end
+
+  test "#errors - default params" do
+    assert [] == IntegerType.errors(%IntegerType{}, 1)
+    assert [value: 1.0] == IntegerType.errors(%IntegerType{}, 1.0)
+    assert [value: "String"] == IntegerType.errors(%IntegerType{}, "String")
+    assert [value: %{}] == IntegerType.errors(%IntegerType{}, %{})
+    assert [value: nil] == IntegerType.errors(%IntegerType{}, nil)
+    assert [value: _datetime] = IntegerType.errors(%IntegerType{}, DateTime.utc_now())
+    assert [value: []] == IntegerType.errors(%IntegerType{}, [])
+  end
 end

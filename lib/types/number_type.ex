@@ -26,4 +26,11 @@ defmodule Talos.Types.NumberType do
   defp check_type(:float, value) do
     is_float(value)
   end
+
+  def errors(type, value) do
+    case valid?(type, value) do
+      true -> []
+      false -> [value: value]
+    end
+  end
 end
