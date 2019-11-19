@@ -1,4 +1,5 @@
 defmodule Talos.Types.MapType do
+  @moduledoc false
   defstruct [:fields]
 
   @behaviour Talos.Types
@@ -24,38 +25,39 @@ defmodule Talos.Types.MapType do
 
   def errors(%__MODULE__{fields: fields} = type, value) do
     cond do
-      is_nil(fields) && is_map(value) -> []
-      !is_map(value) -> [value: value]
-      !valid?(type, value) -> errors_for_fields(fields, value)
-      true -> []
+      is_nil(fields) && is_map(value) ->
+        %{}
+
+      !is_map(value) ->
+        ["#{inspect(value)} does not match #{inspect(type)}"]
+
+      !valid?(type, value) ->
+        errors_for_fields(fields, value)
+
+      true ->
+        %{}
     end
   end
 
   defp errors_for_fields(fields, map) do
-    errors =
-      fields
-      |> Enum.map(fn field ->
-        case field do
-          {key, type} ->
-            case validation_check(type, map, key) do
-              true -> nil
-              false -> {key, Talos.errors(type, map[key])}
-            end
+    fields
+    |> Enum.map(fn field ->
+      case field do
+        {key, type} ->
+          case validation_check(type, map, key) do
+            true -> nil
+            false -> {key, Talos.errors(type, map[key])}
+          end
 
-          {key, type, options} ->
-            case validation_check(type, map, key, options) do
-              true -> nil
-              false -> {key, Talos.errors(type, map[key])}
-            end
-        end
-      end)
-      |> Enum.reject(&is_nil/1)
-      |> Map.new()
-
-    case errors == %{} do
-      true -> []
-      false -> [value: errors]
-    end
+        {key, type, options} ->
+          case validation_check(type, map, key, options) do
+            true -> nil
+            false -> {key, Talos.errors(type, map[key])}
+          end
+      end
+    end)
+    |> Enum.reject(&is_nil/1)
+    |> Map.new()
   end
 
   defp validation_check(type, map, key, opts \\ %{}) do

@@ -42,5 +42,11 @@ defmodule TalosTest do
     }
 
     assert true == Talos.valid?(@request_type, data)
+    assert %{} == Talos.errors(@request_type, data)
+
+    assert %{
+             "action" => [_error_message],
+             "users" => [_errors_message]
+           } = Talos.errors(@request_type, %{})
   end
 end

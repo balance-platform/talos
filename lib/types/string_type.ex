@@ -1,4 +1,5 @@
 defmodule Talos.Types.StringType do
+  @moduledoc false
   defstruct [:min_length, :length, :max_length, :regexp]
   @behaviour Talos.Types
 
@@ -21,7 +22,7 @@ defmodule Talos.Types.StringType do
   def errors(type, value) do
     case valid?(type, value) do
       true -> []
-      false -> [value: value]
+      false -> ["#{inspect(value)} does not match type #{inspect(type)}"]
     end
   end
 end

@@ -30,9 +30,10 @@ defmodule Talos.Types.ArrayTypeTest do
 
     assert [] == ArrayType.errors(%ArrayType{type: number_type}, [])
 
-    assert [value: [nil, "string"]] ==
-             ArrayType.errors(%ArrayType{type: number_type}, [1, nil, "string"])
-
-    assert [value: 1] == ArrayType.errors(%ArrayType{type: number_type}, 1)
+    assert [error_msg] = ArrayType.errors(%ArrayType{type: number_type}, 1)
+    assert error_msg =~ ~r/1 does not match/
+    assert [error_msg1, error_msg2] = ArrayType.errors(%ArrayType{type: number_type}, [-1, -2])
+    assert error_msg1 =~ ~r/-1 does not match/
+    assert error_msg2 =~ ~r/-2 does not match/
   end
 end

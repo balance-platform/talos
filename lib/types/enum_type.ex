@@ -1,4 +1,5 @@
 defmodule Talos.Types.EnumType do
+  @moduledoc false
   defstruct [:members]
   @behaviour Talos.Types
 
@@ -8,8 +9,11 @@ defmodule Talos.Types.EnumType do
 
   def errors(type, value) do
     case valid?(type, value) do
-      true -> []
-      false -> [value: value]
+      true ->
+        []
+
+      false ->
+        ["#{inspect(value)} does not match type #{inspect(type)}"]
     end
   end
 end

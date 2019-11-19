@@ -14,12 +14,12 @@ defmodule Talos.Types.MapTypeTest do
   end
 
   test "#errors for simple cases" do
-    assert [value: 5] == MapType.errors(%MapType{}, 5)
-    assert [value: 0] == MapType.errors(%MapType{}, 0)
-    assert [value: "e"] == MapType.errors(%MapType{}, "e")
-    assert [value: "z"] == MapType.errors(%MapType{}, "z")
-    assert [] == MapType.errors(%MapType{}, %{})
-    assert [] == MapType.errors(%MapType{}, %{a: 3, b: 4})
+    assert [_error_message] = MapType.errors(%MapType{}, 5)
+    assert [_error_message] = MapType.errors(%MapType{}, 0)
+    assert [_error_message] = MapType.errors(%MapType{}, "e")
+    assert [_error_message] = MapType.errors(%MapType{}, "z")
+    assert %{} == MapType.errors(%MapType{}, %{})
+    assert %{} == MapType.errors(%MapType{}, %{a: 3, b: 4})
   end
 
   test "#valid? - with fields" do
@@ -69,11 +69,16 @@ defmodule Talos.Types.MapTypeTest do
       ]
     }
 
-    assert [value: %{"age" => [value: nil], "name" => [value: nil]}] ==
-             MapType.errors(schema, %{})
+    assert %{
+             "age" => [_error_message1],
+             "name" => [_error_message2]
+           } = MapType.errors(schema, %{})
 
-    assert [value: %{"name" => [value: nil]}] == MapType.errors(schema, %{"age" => nil})
-    assert [] == MapType.errors(schema, %{"age" => nil, "name" => nil})
-    assert [] == MapType.errors(schema, %{"age" => nil, "name" => "Dmitry"})
+    assert %{
+             "name" => [_error_message]
+           } = MapType.errors(schema, %{"age" => nil})
+
+    assert %{} == MapType.errors(schema, %{"age" => nil, "name" => nil})
+    assert %{} == MapType.errors(schema, %{"age" => nil, "name" => "Dmitry"})
   end
 end
