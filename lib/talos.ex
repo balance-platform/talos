@@ -15,7 +15,7 @@ defmodule Talos do
     alias Talos.Types.NumberType
     alias Talos.Types.StringType
 
-    # here we define expected struct 
+    # here we define expected struct
     @interests_type %EnumType{
       members: [
         "sports",
@@ -35,12 +35,12 @@ defmodule Talos do
 
     def create(conn, params) do
       case Talos.valid?(@user_type, params) do
-        true -> 
+        true ->
           user = MyApp.create_user(params)
           conn
           |> put_flash(:info, "User created successfully.")
           |> redirect(to: Routes.user_path(conn, :show, user))
-        false -> 
+        false ->
           conn
           |> put_flash(:info, "Wrong params passed.")
           |> render("new.html")
@@ -52,5 +52,9 @@ defmodule Talos do
 
   def valid?(%{__struct__: type_module} = data_type, data) do
     type_module.valid?(data_type, data)
+  end
+
+  def errors(%{__struct__: type_module} = data_type, data) do
+    type_module.errors(data_type, data)
   end
 end

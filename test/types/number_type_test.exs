@@ -31,6 +31,18 @@ defmodule Talos.Types.NumberTypeTest do
     assert false == NumberType.valid?(%NumberType{}, [])
   end
 
+  test "#errors - default params" do
+    assert [] == NumberType.errors(%NumberType{}, 1)
+    assert [] == NumberType.errors(%NumberType{}, 1.0)
+
+    assert [_error_message] = NumberType.errors(%NumberType{type: :integer}, 1.0)
+    assert [_error_message] = NumberType.errors(%NumberType{}, "String")
+    assert [_error_message] = NumberType.errors(%NumberType{}, %{})
+    assert [_error_message] = NumberType.errors(%NumberType{}, nil)
+    assert [_error_message] = NumberType.errors(%NumberType{}, DateTime.utc_now())
+    assert [_error_message] = NumberType.errors(%NumberType{}, [])
+  end
+
   test "#valid? - called with wrong type" do
     assert_raise FunctionClauseError, fn -> NumberType.valid?(%NumberType{type: :string}, 42) end
   end

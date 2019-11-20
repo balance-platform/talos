@@ -9,6 +9,16 @@ defmodule Talos.Types.EnumTypeTest do
     assert false == EnumType.valid?(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
   end
 
+  test "errors - returns list with error element" do
+    assert [] == EnumType.errors(%EnumType{members: [1, 2, 3, 4, 5]}, 5)
+
+    assert [_error_message] = EnumType.errors(%EnumType{members: [1, 2, 3, 4, 5]}, 0)
+
+    assert [] == EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
+
+    assert [_error_message] = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
+  end
+
   test "#valid? - call with invalid members value" do
     assert_raise FunctionClauseError, fn ->
       EnumType.valid?(%EnumType{members: nil}, "SomeVal")

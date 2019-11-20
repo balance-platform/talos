@@ -29,4 +29,14 @@ defmodule Talos.Types.FloatTypeTest do
     assert false == FloatType.valid?(%FloatType{}, DateTime.utc_now())
     assert false == FloatType.valid?(%FloatType{}, [])
   end
+
+  test "#errors - default params" do
+    assert [] == FloatType.errors(%FloatType{}, 1.0)
+    assert [_error_message] = FloatType.errors(%FloatType{}, 1)
+    assert [_error_message] = FloatType.errors(%FloatType{}, "String")
+    assert [_error_message] = FloatType.errors(%FloatType{}, %{})
+    assert [_error_message] = FloatType.errors(%FloatType{}, nil)
+    assert [_error_messages] = FloatType.errors(%FloatType{}, DateTime.utc_now())
+    assert [_error_message] = FloatType.errors(%FloatType{}, [])
+  end
 end
