@@ -3,7 +3,13 @@ defmodule Talos.Types.ArrayType do
   defstruct [:type]
 
   @behaviour Talos.Types
-
+  @type t :: %{
+          __struct__: atom,
+          type: %{
+            __struct__: atom
+          }
+        }
+  @spec valid?(Talos.Types.ArrayType.t(), any) :: boolean
   def valid?(%__MODULE__{type: type}, values) do
     is_list(values) &&
       Enum.all?(values, fn value ->
@@ -11,6 +17,7 @@ defmodule Talos.Types.ArrayType do
       end)
   end
 
+  @spec errors(Talos.Types.ArrayType.t(), any) :: list(String.t())
   def errors(%__MODULE__{type: element_type} = array_type, values) do
     cond do
       !is_list(values) ->

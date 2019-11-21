@@ -3,9 +3,16 @@ defmodule Talos.Types.MapType do
   defstruct [:fields]
 
   @behaviour Talos.Types
-
   @default_options %{optional: false, allow_nil: false}
 
+  
+  @type field :: {any, %{__struct__: atom}, keyword}
+  @type t :: %{
+          __struct__: atom,
+          fields: list(field)
+        }
+
+  @spec valid?(Talos.Types.MapType.t(), any) :: boolean
   def valid?(%__MODULE__{fields: nil}, value) do
     is_map(value)
   end
@@ -23,6 +30,7 @@ defmodule Talos.Types.MapType do
       end)
   end
 
+  @spec errors(Talos.Types.MapType.t(), binary) :: list(String.t()) | map
   def errors(%__MODULE__{fields: fields} = type, value) do
     cond do
       is_nil(fields) && is_map(value) ->
