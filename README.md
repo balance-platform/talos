@@ -8,7 +8,7 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 ```elixir
 def deps do
   [
-    {:talos, "~> 0.2.0"}
+    {:talos, "~> 0.3.1"}
   ]
 end
 ```
