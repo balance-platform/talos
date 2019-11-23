@@ -3,19 +3,21 @@ defmodule Talos.Types.ArrayType do
     ArrayType is used to check passed value is a list
 
   ```elixir
-    iex> Talos.valid?(Talos.Types.ArrayType{allow_blank: true}, [])
+    iex> alias Talos.Types.ArrayType
+    iex> alias Talos.Types.IntegerType
+    iex> Talos.valid?(%ArrayType{allow_blank: true}, [])
     true
-    iex> Talos.valid?(Talos.Types.ArrayType{allow_nil: true}, nil)
+    iex> Talos.valid?(%ArrayType{allow_nil: true}, nil)
     true
-    iex> Talos.valid?(Talos.Types.ArrayType{}, nil)
+    iex> Talos.valid?(%ArrayType{}, nil)
     false
-    iex> Talos.valid?(Talos.Types.ArrayType{}, ["one", two, 3, %{}])
+    iex> Talos.valid?(%ArrayType{}, ["one", two, 3, %{}])
     true
-    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{}}, ["one", two, 3, %{}])
+    iex> Talos.valid?(%ArrayType{type: %IntegerType{}}, ["one", two, 3, %{}])
     false
-    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{}}, [1,2,3])
+    iex> Talos.valid?(%ArrayType{type: %IntegerType{}}, [1,2,3])
     true
-    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{allow_nil: true}}, [nil,2,3])
+    iex> Talos.valid?(%ArrayType{type: %IntegerType{allow_nil: true}}, [nil,2,3])
     true
 
   ```

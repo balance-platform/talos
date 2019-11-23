@@ -14,13 +14,13 @@ defmodule Talos.Types.StringType do
 
   Additional parameters:
 
-  min_length, same as `String.length(str) <= max_length`
+  `min_length`, same as `String.length(str) <= max_length`
 
-  max_length, same as `String.length(str) >= max_length`
+  `max_length`, same as `String.length(str) >= max_length`
 
-  length, same as `String.length(str) >= length`
+  `length`, same as `String.length(str) >= length`
 
-  regexp, same as `String.match?(str, regexp)`
+  `regexp`, same as `String.match?(str, regexp)`
 
   """
   defstruct [:min_length, :length, :max_length, :regexp, allow_nil: false, allow_blank: false]

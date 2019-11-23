@@ -2,15 +2,13 @@ defmodule Talos.Types.MapType do
   @moduledoc """
   MapType for validation maps
 
-  Fields are tuples:
+  Fields are tuples `{key, type, options \\ []}`:
 
-    {key, type, options}
-
-    key - string or atom, key of map
+    `key` - string or atom, key of map
     
-    type - Talos defined Type
+    `type` - Talos defined Type
     
-    options: 
+    `options`: 
     
       * `optional`: true/false, if false - there will be error on key missing
 
