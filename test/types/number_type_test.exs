@@ -1,8 +1,10 @@
 defmodule Talos.Types.NumberTypeTest do
   use ExUnit.Case
   alias Talos.Types.NumberType
+  doctest NumberType
 
   test "#valid? - with additional params" do
+    assert true == NumberType.valid?(%NumberType{allow_nil: true}, nil)
     assert true == NumberType.valid?(%NumberType{lt: 3}, 1)
     assert false == NumberType.valid?(%NumberType{lt: 0}, 1)
     assert false == NumberType.valid?(%NumberType{lt: 0}, 0)

@@ -4,32 +4,48 @@ defmodule Talos.Types.StringType do
 
   For example:
   ```elixir
-    ultra_cost_domains = %Talos.Types.StringType{length: 3}
+    
+    iex> short_domain = %Talos.Types.StringType{length: 3}
+    iex> domains_list = ["cats", "foo", "baz", "pron"]
+    iex> Enum.filter(domains_list, fn str -> Talos.valid?(short_domain, str) end)
+    ["foo", "baz"]
 
-    domains_list = ["cats", "foo", "baz", "pron",....]
-
-    Enum.filter(domains_list, &Talos.valid?())
   ```
 
   Additional parameters:
+
   min_length, same as `String.length(str) <= max_length`
+
   max_length, same as `String.length(str) >= max_length`
+
   length, same as `String.length(str) >= length`
+
   regexp, same as `String.match?(str, regexp)`
+
   """
-  defstruct [:min_length, :length, :max_length, :regexp]
+  defstruct [:min_length, :length, :max_length, :regexp, allow_nil: false, allow_blank: false]
 
   @type t :: %{
           __struct__: atom,
           min_length: integer,
           length: integer,
           max_length: integer,
+          allow_nil: boolean,
+          allow_blank: boolean,
           regexp: Regex.t()
         }
 
   @behaviour Talos.Types
 
-  @spec valid?(Talos.Types.StringType.t(), binary) :: boolean
+  @spec valid?(Talos.Types.StringType.t(), any) :: boolean
+  def valid?(%__MODULE__{allow_blank: true}, "") do
+    true
+  end
+
+  def valid?(%__MODULE__{allow_nil: true}, nil) do
+    true
+  end
+
   def valid?(
         %__MODULE__{regexp: regexp, min_length: min_len, length: len, max_length: max_len},
         value

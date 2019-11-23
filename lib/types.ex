@@ -5,29 +5,30 @@ defmodule Talos.Types do
   You can implement your own data type and use it with another Talos Types
 
   ```elixir
-  defmodule EmailType do
-    @behaviour Talos.Types
-    alias Talos.Types.StringType
 
-    @email_type %StringType{min_length: 5, regexp: ~r/.*@.*/, max_length: 255}
+    iex> defmodule EmailType do
+    iex>   @behaviour Talos.Types
+    iex>   alias Talos.Types.StringType
+    iex>   @email_type %StringType{min_length: 5, regexp: ~r/.*@.*/, max_length: 255}
+    iex>   def valid?(_email_type, email) do
+    iex>     Talos.valid?(@email_type, email)
+    iex>   end
+    iex>   def errors(email_type, email) do
+    iex>     case valid?(email_type, email) do
+    iex>       true -> []
+    iex>       false -> ["not valid email"]
+    iex>     end
+    iex>   end
+    iex> end
+    iex> Talos.valid?(EmailType, "example@foo.ru")
+    true
+    iex> Talos.valid?(EmailType, "example")
+    false
+    iex> Talos.errors(EmailType, "example@foo.ru")
+    []
+    iex> Talos.errors(EmailType, "example")
+    ["not valid email"]
 
-    def valid?(_email_type, email) do
-      Talos.valid?(@email_type, email)
-    end
-
-    def errors(email_type, email) do
-      case valid?(email_type, email) do
-        true -> []
-        false -> ["\#{inspect(email)} is not valid email"]
-      end
-    end
-  end
-
-  Talos.valid?(%EmailType, "example@foo.ru") #=> true
-  Talos.valid?(%EmailType, "example") #=> false
-
-  Talos.errors(%EmailType, "example@foo.ru") #=> []
-  Talos.errors(%EmailType, "example") #=> ["example is not valid email"]
   ```
   """
   @callback valid?(any, any) :: boolean

@@ -1,8 +1,10 @@
 defmodule Talos.Types.IntegerTest do
   use ExUnit.Case
   alias Talos.Types.IntegerType
+  doctest IntegerType
 
   test "#valid? - with additional params" do
+    assert true == IntegerType.valid?(%IntegerType{allow_nil: true}, nil)
     assert true == IntegerType.valid?(%IntegerType{lt: 3}, 1)
     assert false == IntegerType.valid?(%IntegerType{lt: 0}, 1)
     assert false == IntegerType.valid?(%IntegerType{lt: 0}, 0)
@@ -18,6 +20,10 @@ defmodule Talos.Types.IntegerTest do
     assert false == IntegerType.valid?(%IntegerType{lteq: 42}, 100)
     assert true == IntegerType.valid?(%IntegerType{lteq: 42}, 42)
     assert true == IntegerType.valid?(%IntegerType{lteq: 42}, 0)
+  end
+
+  test "#valid? with allow_blank" do
+    assert true == IntegerType.valid?(%IntegerType{allow_blank: true}, 0)
   end
 
   test "#valid? - default params" do

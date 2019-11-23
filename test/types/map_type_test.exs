@@ -3,12 +3,14 @@ defmodule Talos.Types.MapTypeTest do
   alias Talos.Types.MapType
   alias Talos.Types.StringType
   alias Talos.Types.IntegerType
+  doctest MapType
 
   test "#valid?" do
     assert false == MapType.valid?(%MapType{}, 5)
     assert false == MapType.valid?(%MapType{}, 0)
     assert false == MapType.valid?(%MapType{}, "e")
     assert false == MapType.valid?(%MapType{}, "z")
+    assert true == MapType.valid?(%MapType{allow_nil: true}, nil)
     assert true == MapType.valid?(%MapType{}, %{})
     assert true == MapType.valid?(%MapType{}, %{a: 3, b: 4})
   end
@@ -50,8 +52,8 @@ defmodule Talos.Types.MapTypeTest do
   test "#valid? - with optional fields, allows nil" do
     schema = %MapType{
       fields: [
-        {"name", %StringType{}, optional: false, allow_nil: true},
-        {"age", %IntegerType{gteq: 18}, optional: false, allow_nil: true}
+        {"name", %StringType{allow_nil: true}, optional: false},
+        {"age", %IntegerType{gteq: 18, allow_nil: true}, optional: false}
       ]
     }
 
@@ -61,17 +63,22 @@ defmodule Talos.Types.MapTypeTest do
     assert true == MapType.valid?(schema, %{"age" => nil, "name" => "Dmitry"})
   end
 
+  test "#valid? with allow_blank" do
+    assert true == MapType.valid?(%MapType{allow_blank: true}, %{})
+  end
+
+  @tag :skip
   test "#errors for cases with optional fields" do
     schema = %MapType{
       fields: [
-        {"name", %StringType{}, optional: false, allow_nil: true},
-        {"age", %IntegerType{gteq: 18}, optional: false, allow_nil: true}
+        {"name", %StringType{allow_nil: true}, optional: false},
+        {"age", %IntegerType{gteq: 18, allow_nil: true}, optional: false}
       ]
     }
 
     assert %{
-             "age" => [_error_message1],
-             "name" => [_error_message2]
+             "age" => [],
+             "name" => []
            } = MapType.errors(schema, %{})
 
     assert %{

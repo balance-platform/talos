@@ -4,20 +4,31 @@ defmodule Talos.Types.NumberType do
 
   For example:
   ```elixir
-    percents = %Talos.Types.NumberType{gteq: 0, lteq: 100}
 
-    Talos.valid?(percents, 42) #=> true
-    Talos.valid?(percents, -15) #=> false
-    Talos.valid?(percents, 30.0) #=> true
+    iex> percents = %Talos.Types.NumberType{gteq: 0, lteq: 100}
+    iex> Talos.valid?(percents, 42)
+    true
+    iex> Talos.valid?(percents, -15)
+    false
+    iex> Talos.valid?(percents, 30.0)
+    true
+
   ```
 
   Additional parameters:
+
+  `allow_nil` - allows value to be nil
+
   `gteq` - greater than or equal, same as `>=`
+
   `lteq` - lower than or equal, same as `<=`
+
   `gt` - lower than, same as `>`
+
   `lt` - lower than, same as `<`
+
   """
-  defstruct [:gteq, :lteq, :gt, :lt, :type]
+  defstruct [:gteq, :lteq, :gt, :lt, :type, allow_nil: false]
   @behaviour Talos.Types
 
   @type t :: %{
@@ -26,10 +37,15 @@ defmodule Talos.Types.NumberType do
           lteq: number,
           gt: number,
           lt: number,
+          allow_nil: boolean,
           type: :float | :integer | nil
         }
 
   @spec valid?(Talos.Types.NumberType.t(), any) :: boolean
+  def valid?(%__MODULE__{allow_nil: true}, nil) do
+    true
+  end
+
   def valid?(%__MODULE__{gteq: gteq, lteq: lteq, gt: gt, lt: lt, type: type}, value)
       when type in [nil, :float, :integer] do
     with true <- check_type(type, value),
