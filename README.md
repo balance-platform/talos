@@ -12,7 +12,3 @@ def deps do
   ]
 end
 ```
-
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at [https://hexdocs.pm/talos](https://hexdocs.pm/talos).
-
