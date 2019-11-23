@@ -4,7 +4,7 @@ defmodule Talos.MixProject do
   def project do
     [
       app: :talos,
-      version: "0.2.0",
+      version: "0.3.0",
       elixir: "~> 1.9",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -12,7 +12,25 @@ defmodule Talos.MixProject do
       package: package(),
       test_coverage: [tool: ExCoveralls],
       deps: deps(),
-      source_url: "https://github.com/SofaKing18/talos"
+      source_url: "https://github.com/SofaKing18/talos",
+      test_coverage: [tool: ExCoveralls],
+      preferred_cli_env: [
+        coveralls: :test,
+        "coveralls.detail": :test,
+        "coveralls.post": :test,
+        "coveralls.html": :test
+      ],
+      dialyzer: [
+        plt_add_deps: :transitive
+      ],
+      # Docs
+      name: "Talos",
+      source_url: "https://github.com/SofaKing18/talos",
+      homepage_url: "https://github.com/SofaKing18/talos",
+      docs: [
+        main: "Talos",
+        extras: ["README.md"]
+      ]
     ]
   end
 
@@ -28,7 +46,8 @@ defmodule Talos.MixProject do
     [
       {:credo, "~> 1.1.0", only: [:dev, :test], runtime: false},
       {:excoveralls, "~> 0.10", only: :test},
-      {:ex_doc, "~> 0.21", only: :dev, runtime: false}
+      {:ex_doc, "~> 0.21", only: :dev, runtime: false},
+      {:dialyxir, "~> 1.0.0-rc.7", only: [:dev, :test], runtime: false}
     ]
   end
 

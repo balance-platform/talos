@@ -1,8 +1,10 @@
 defmodule Talos.Types.StringTypeTest do
   use ExUnit.Case
   alias Talos.Types.StringType
+  doctest StringType
 
   test "#valid? - with regexp" do
+    assert true == StringType.valid?(%StringType{regexp: ~r/\d/, allow_nil: true}, nil)
     assert true == StringType.valid?(%StringType{regexp: ~r/\d/}, "1")
     assert false == StringType.valid?(%StringType{regexp: ~r/^\d\Z/}, "1000")
     assert false == StringType.valid?(%StringType{regexp: ~r/^\d\Z/}, 1)
@@ -11,6 +13,10 @@ defmodule Talos.Types.StringTypeTest do
     assert false == StringType.valid?(%StringType{regexp: ~r/^\d\Z/}, nil)
     assert false == StringType.valid?(%StringType{regexp: ~r/^\d\Z/}, [])
     assert true == StringType.valid?(%StringType{regexp: ~r/^\d{4}-\d{2}-\d{2}\Z/}, "2019-22-13")
+  end
+
+  test "#valid? with allow_blank" do
+    assert true == StringType.valid?(%StringType{allow_blank: true, min_length: 30}, "")
   end
 
   test "#valid? - without regexp" do

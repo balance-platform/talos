@@ -19,8 +19,8 @@ defmodule TalosTest do
   @user_type %MapType{
     fields: [
       {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-      {"age", %NumberType{gteq: 18}, allow_nil: true},
-      {"interests", %ArrayType{type: @interests_type}, allow_nil: true}
+      {"age", %NumberType{gteq: 18, allow_nil: true}},
+      {"interests", %ArrayType{type: @interests_type, allow_nil: true}}
     ]
   }
 

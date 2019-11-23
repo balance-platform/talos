@@ -14,7 +14,6 @@ defmodule Talos do
     alias Talos.Types.EnumType
     alias Talos.Types.NumberType
     alias Talos.Types.StringType
-
     # here we define expected struct
     @interests_type %EnumType{
       members: [
@@ -23,7 +22,6 @@ defmodule Talos do
         "food"
       ]
     }
-
     # one struct can be nested in another
     @user_type %MapType{
       fields: [
@@ -32,7 +30,6 @@ defmodule Talos do
         {"interests", %ArrayType{type: @interests_type}, allow_nil: true}
       ]
     }
-
     def create(conn, params) do
       case Talos.valid?(@user_type, params) do
         true ->
@@ -50,11 +47,21 @@ defmodule Talos do
   ```
   """
 
+  @spec valid?(%{__struct__: atom} | module, any) :: boolean
   def valid?(%{__struct__: type_module} = data_type, data) do
     type_module.valid?(data_type, data)
   end
 
+  def valid?(module, value) do
+    module.valid?(module, value)
+  end
+
+  @spec errors(%{__struct__: atom} | module, any) :: any
   def errors(%{__struct__: type_module} = data_type, data) do
     type_module.errors(data_type, data)
+  end
+
+  def errors(module, value) do
+    module.errors(module, value)
   end
 end

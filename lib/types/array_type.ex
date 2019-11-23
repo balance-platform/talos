@@ -1,8 +1,51 @@
 defmodule Talos.Types.ArrayType do
-  @moduledoc false
-  defstruct [:type]
+  @moduledoc """
+    ArrayType is used to check passed value is a list
+
+  ```elixir
+    iex> Talos.valid?(Talos.Types.ArrayType{allow_blank: true}, [])
+    true
+    iex> Talos.valid?(Talos.Types.ArrayType{allow_nil: true}, nil)
+    true
+    iex> Talos.valid?(Talos.Types.ArrayType{}, nil)
+    false
+    iex> Talos.valid?(Talos.Types.ArrayType{}, ["one", two, 3, %{}])
+    true
+    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{}}, ["one", two, 3, %{}])
+    false
+    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{}}, [1,2,3])
+    true
+    iex> Talos.valid?(Talos.Types.ArrayType{type: Talos.Types.IntegerType{allow_nil: true}}, [nil,2,3])
+    true
+
+  ```
+
+  Additional parameters:
+
+  `allow_blank` - allows array to be empty
+
+  `allow_nil` - allows value to be nil
+
+  `type` - defines type of array elements
+
+  """
+  defstruct [:type, allow_nil: false, allow_blank: false]
 
   @behaviour Talos.Types
+  @type t :: %{
+          __struct__: atom,
+          type: %{__struct__: atom} | nil,
+          allow_blank: boolean,
+          allow_nil: boolean
+        }
+  @spec valid?(Talos.Types.ArrayType.t(), any) :: boolean
+  def valid?(%__MODULE__{allow_blank: true}, []) do
+    true
+  end
+
+  def valid?(%__MODULE__{allow_nil: true}, nil) do
+    true
+  end
 
   def valid?(%__MODULE__{type: type}, values) do
     is_list(values) &&
@@ -11,6 +54,7 @@ defmodule Talos.Types.ArrayType do
       end)
   end
 
+  @spec errors(Talos.Types.ArrayType.t(), any) :: list(String.t())
   def errors(%__MODULE__{type: element_type} = array_type, values) do
     cond do
       !is_list(values) ->

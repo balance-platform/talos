@@ -4,12 +4,18 @@ defmodule Talos.Types.ArrayTypeTest do
   alias Talos.Types.NumberType
 
   test "#valid?" do
+    assert true == ArrayType.valid?(%ArrayType{allow_nil: true}, nil)
     assert true == ArrayType.valid?(%ArrayType{}, [])
     assert true == ArrayType.valid?(%ArrayType{}, [1])
     assert true == ArrayType.valid?(%ArrayType{}, [1, 2, "string"])
+    assert true == ArrayType.valid?(%ArrayType{allow_nil: true}, [1, 2, "string"])
     assert false == ArrayType.valid?(%ArrayType{}, nil)
     assert false == ArrayType.valid?(%ArrayType{}, 1)
     assert false == ArrayType.valid?(%ArrayType{}, "string")
+  end
+
+  test "#valid? with allow_blank" do
+    assert true == ArrayType.valid?(%ArrayType{allow_blank: true}, [])
   end
 
   test "#valid? - with additional params" do

@@ -1,8 +1,56 @@
 defmodule Talos.Types.IntegerType do
-  @moduledoc false
+  @moduledoc """
+  Type for check value is integer
+
+  For example:
+  ```elixir
+    
+    iex> percents = %Talos.Types.IntegerType{gteq: 0, lteq: 100}
+    iex> Talos.valid?(percents, 42)
+    true
+    iex> Talos.valid?(percents, -15)
+    false
+    iex> Talos.valid?(percents, 30.0)
+    false
+
+  ```
+
+  Additional parameters:
+
+  `allow_nil` - allows value to be nil
+
+  `allow_blank` - allows value to be blank (0)
+
+  `gteq` - greater than or equal, same as `>=`
+
+  `lteq` - lower than or equal, same as `<=`
+
+  `gt` - lower than, same as `>`
+
+  `lt` - lower than, same as `<`
+  """
   alias Talos.Types.NumberType
-  defstruct [:gteq, :lteq, :gt, :lt]
+  defstruct [:gteq, :lteq, :gt, :lt, allow_nil: false, allow_blank: false]
+
+  @type t :: %{
+          __struct__: atom,
+          gteq: integer,
+          lteq: integer,
+          gt: integer,
+          lt: integer,
+          allow_blank: boolean,
+          allow_nil: boolean
+        }
   @behaviour Talos.Types
+
+  @spec valid?(Talos.Types.IntegerType.t(), any) :: boolean
+  def valid?(%__MODULE__{allow_blank: true}, 0) do
+    true
+  end
+
+  def valid?(%__MODULE__{allow_nil: true}, nil) do
+    true
+  end
 
   def valid?(type, value) do
     type
@@ -10,6 +58,7 @@ defmodule Talos.Types.IntegerType do
     |> NumberType.valid?(value)
   end
 
+  @spec errors(Talos.Types.IntegerType.t(), any) :: list(String.t())
   def errors(type, value) do
     case valid?(type, value) do
       true -> []
