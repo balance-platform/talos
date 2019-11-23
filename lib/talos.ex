@@ -47,7 +47,7 @@ defmodule Talos do
   ```
   """
 
-  @spec valid?(%{__struct__: atom} | module, any) :: boolean
+  @spec valid?(struct | module, any) :: boolean
   def valid?(%{__struct__: type_module} = data_type, data) do
     type_module.valid?(data_type, data)
   end
@@ -56,7 +56,7 @@ defmodule Talos do
     module.valid?(module, value)
   end
 
-  @spec errors(%{__struct__: atom} | module, any) :: any
+  @spec errors(struct | module, any) :: any
   def errors(%{__struct__: type_module} = data_type, data) do
     type_module.errors(data_type, data)
   end

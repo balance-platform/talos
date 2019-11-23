@@ -36,7 +36,7 @@ defmodule Talos.Types.ArrayType do
   @behaviour Talos.Types
   @type t :: %{
           __struct__: atom,
-          type: %{__struct__: atom} | nil,
+          type: struct | module | nil,
           allow_blank: boolean,
           allow_nil: boolean
         }

@@ -31,6 +31,6 @@ defmodule Talos.Types do
 
   ```
   """
-  @callback valid?(any, any) :: boolean
-  @callback errors(any, any) :: list(String.t()) | map
+  @callback valid?(struct | module, any) :: boolean
+  @callback errors(struct | module, any) :: list(String.t()) | map
 end

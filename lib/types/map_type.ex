@@ -40,12 +40,13 @@ defmodule Talos.Types.MapType do
   @behaviour Talos.Types
   @default_options %{optional: false}
 
-  @type field :: {any, %{__struct__: atom}, keyword}
+  @type field :: {any, struct | module, keyword}
+  @type short_field :: {any, struct | module}
   @type t :: %{
           __struct__: atom,
           allow_nil: boolean,
           allow_blank: boolean,
-          fields: list(field)
+          fields: list(field | short_field) |nil
         }
 
   @spec valid?(Talos.Types.MapType.t(), any) :: boolean
