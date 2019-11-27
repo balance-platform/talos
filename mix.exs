@@ -62,7 +62,7 @@ defmodule Talos.MixProject do
       # These are the default files included in the package
       files: ~w(lib .formatter.exs mix.exs README* CHANGELOG*),
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/elixir-ecto/postgrex"}
+      links: %{"GitHub" => "https://github.com/SofaKing18/talos"}
     ]
   end
 end
