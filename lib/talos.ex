@@ -10,7 +10,7 @@ defmodule Talos do
   defmodule MyAppWeb.UserController do
     # we define required types
     alias Talos.Types.MapType
-    alias Talos.Types.ArrayType
+    alias Talos.Types.ListType
     alias Talos.Types.EnumType
     alias Talos.Types.NumberType
     alias Talos.Types.StringType
@@ -27,7 +27,7 @@ defmodule Talos do
       fields: [
         {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
         {"age", %NumberType{gteq: 18}, allow_nil: true},
-        {"interests", %ArrayType{type: @interests_type}, allow_nil: true}
+        {"interests", %ListType{type: @interests_type}, allow_nil: true}
       ]
     }
     def create(conn, params) do

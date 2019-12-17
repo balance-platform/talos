@@ -17,7 +17,7 @@ defmodule Talos.Types.MapType do
 
     iex> alias Talos.Types.MapType
     iex> alias Talos.Types.StringType
-    iex> alias Talos.Types.ArrayType
+    iex> alias Talos.Types.ListType
     iex> alias Talos.Types.IntegerType
     iex> any_map = %MapType{}
     iex> Talos.valid?(any_map, %{foo: :bar})
@@ -25,7 +25,7 @@ defmodule Talos.Types.MapType do
     iex> user_params = %MapType{fields: [
     ...>  {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
     ...>  {"age", %IntegerType{gteq: 18, allow_nil: true}},
-    ...>  {"interests", %ArrayType{type: %StringType{}}, optional: true}
+    ...>  {"interests", %ListType{type: %StringType{}}, optional: true}
     ...> ]}
     iex> Talos.valid?(user_params, %{})
     false

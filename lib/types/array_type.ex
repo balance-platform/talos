@@ -1,23 +1,23 @@
-defmodule Talos.Types.ArrayType do
+defmodule Talos.Types.ListType do
   @moduledoc """
-    ArrayType is used to check passed value is a list
+    ListType is used to check passed value is a list
 
   ```elixir
-    iex> alias Talos.Types.ArrayType
+    iex> alias Talos.Types.ListType
     iex> alias Talos.Types.IntegerType
-    iex> Talos.valid?(%ArrayType{allow_blank: true}, [])
+    iex> Talos.valid?(%ListType{allow_blank: true}, [])
     true
-    iex> Talos.valid?(%ArrayType{allow_nil: true}, nil)
+    iex> Talos.valid?(%ListType{allow_nil: true}, nil)
     true
-    iex> Talos.valid?(%ArrayType{}, nil)
+    iex> Talos.valid?(%ListType{}, nil)
     false
-    iex> Talos.valid?(%ArrayType{}, ["one", two, 3, %{}])
+    iex> Talos.valid?(%ListType{}, ["one", two, 3, %{}])
     true
-    iex> Talos.valid?(%ArrayType{type: %IntegerType{}}, ["one", two, 3, %{}])
+    iex> Talos.valid?(%ListType{type: %IntegerType{}}, ["one", two, 3, %{}])
     false
-    iex> Talos.valid?(%ArrayType{type: %IntegerType{}}, [1,2,3])
+    iex> Talos.valid?(%ListType{type: %IntegerType{}}, [1,2,3])
     true
-    iex> Talos.valid?(%ArrayType{type: %IntegerType{allow_nil: true}}, [nil,2,3])
+    iex> Talos.valid?(%ListType{type: %IntegerType{allow_nil: true}}, [nil,2,3])
     true
 
   ```
@@ -40,7 +40,7 @@ defmodule Talos.Types.ArrayType do
           allow_blank: boolean,
           allow_nil: boolean
         }
-  @spec valid?(Talos.Types.ArrayType.t(), any) :: boolean
+  @spec valid?(Talos.Types.ListType.t(), any) :: boolean
   def valid?(%__MODULE__{allow_blank: true}, []) do
     true
   end
@@ -56,7 +56,7 @@ defmodule Talos.Types.ArrayType do
       end)
   end
 
-  @spec errors(Talos.Types.ArrayType.t(), any) :: list(String.t())
+  @spec errors(Talos.Types.ListType.t(), any) :: list(String.t())
   def errors(%__MODULE__{type: element_type} = array_type, values) do
     cond do
       !is_list(values) ->
