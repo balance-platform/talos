@@ -2,6 +2,7 @@ defmodule TalosTest do
   use ExUnit.Case
   doctest Talos
 
+  alias Talos.Field
   alias Talos.Types.MapType
   alias Talos.Types.ListType
   alias Talos.Types.EnumType
@@ -18,16 +19,16 @@ defmodule TalosTest do
 
   @user_type %MapType{
     fields: [
-      {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-      {"age", %NumberType{gteq: 18, allow_nil: true}},
-      {"interests", %ListType{type: @interests_type, allow_nil: true}}
+      %Field{key: "email", type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
+      %Field{key: "age", type: %NumberType{gteq: 18, allow_nil: true}},
+      %Field{key: "interests", type: %ListType{type: @interests_type, allow_nil: true}}
     ]
   }
 
   @request_type %MapType{
     fields: [
-      {"action", %EnumType{members: ["create_users", "notify_users"]}, optional: false},
-      {"users", %ListType{type: @user_type}}
+      %Field{key: "action", type: %EnumType{members: ["create_users", "notify_users"]}},
+      %Field{key: "users", type: %ListType{type: @user_type}}
     ]
   }
 
