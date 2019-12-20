@@ -52,7 +52,7 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 ```elixir
 def deps do
   [
-    {:talos, "~> 0.3.2"}
+    {:talos, "~> 1.0.0"}
   ]
 end
 ```
