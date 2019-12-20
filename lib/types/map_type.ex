@@ -88,7 +88,7 @@ defmodule Talos.Types.MapType do
     Enum.map(fields, fn %Talos.Field{} = field ->
       Talos.errors(field, map)
     end)
-    |> Enum.reject(&is_nil/1)
+    |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
     |> Map.new()
   end
 end

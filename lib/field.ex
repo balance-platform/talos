@@ -29,14 +29,14 @@ defmodule Talos.Field do
     false
   end
 
-  def errors(%__MODULE__{} = field, expected_map_value)
+  def errors(%__MODULE__{optional: is_optional} = field, expected_map_value)
       when is_map(expected_map_value) do
     is_key_missed = !Map.has_key?(expected_map_value, field.key)
 
-    if is_key_missed do
-      {field.key, ["should exist"]}
-    else
-      {field.key, Talos.errors(field.type, expected_map_value[field.key])}
+    cond do
+      is_key_missed && !is_optional -> {field.key, ["should exist"]}
+      is_key_missed && is_optional -> {field.key, []}
+      true -> {field.key, Talos.errors(field.type, expected_map_value[field.key])}
     end
   end
 
