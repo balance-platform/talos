@@ -8,9 +8,10 @@ defmodule Talos do
 
   ```elixir
   defmodule MyAppWeb.UserController do
-    # we define required types
+    # we define required types and structs
+    alias Talos.Field
     alias Talos.Types.MapType
-    alias Talos.Types.ArrayType
+    alias Talos.Types.ListType
     alias Talos.Types.EnumType
     alias Talos.Types.NumberType
     alias Talos.Types.StringType
@@ -25,9 +26,9 @@ defmodule Talos do
     # one struct can be nested in another
     @user_type %MapType{
       fields: [
-        {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-        {"age", %NumberType{gteq: 18}, allow_nil: true},
-        {"interests", %ArrayType{type: @interests_type}, allow_nil: true}
+        %Field{key: "email" type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
+        %Field{key: "age" type: %NumberType{gteq: 18}, allow_nil: true},
+        %Field{key: "interests" type: %ListType{type: @interests_type}, allow_nil: true}
       ]
     }
     def create(conn, params) do

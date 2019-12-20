@@ -17,15 +17,16 @@ defmodule Talos.Types.MapType do
 
     iex> alias Talos.Types.MapType
     iex> alias Talos.Types.StringType
-    iex> alias Talos.Types.ArrayType
+    iex> alias Talos.Types.ListType
     iex> alias Talos.Types.IntegerType
+    iex> alias Talos.Field
     iex> any_map = %MapType{}
     iex> Talos.valid?(any_map, %{foo: :bar})
     true
     iex> user_params = %MapType{fields: [
-    ...>  {"email", %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-    ...>  {"age", %IntegerType{gteq: 18, allow_nil: true}},
-    ...>  {"interests", %ArrayType{type: %StringType{}}, optional: true}
+    ...>  %Field{key: "email", type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
+    ...>  %Field{key: "age", type: %IntegerType{gteq: 18, allow_nil: true}},
+    ...>  %Field{key: "interests", type: %ListType{type: %StringType{}}, optional: true}
     ...> ]}
     iex> Talos.valid?(user_params, %{})
     false
@@ -38,15 +39,12 @@ defmodule Talos.Types.MapType do
   defstruct [:fields, allow_nil: false, allow_blank: false]
 
   @behaviour Talos.Types
-  @default_options %{optional: false}
 
-  @type field :: {any, struct | module, keyword}
-  @type short_field :: {any, struct | module}
   @type t :: %{
           __struct__: atom,
           allow_nil: boolean,
           allow_blank: boolean,
-          fields: list(field | short_field) |nil
+          fields: list(Talos.Field.t()) | nil
         }
 
   @spec valid?(Talos.Types.MapType.t(), any) :: boolean
@@ -64,14 +62,8 @@ defmodule Talos.Types.MapType do
 
   def valid?(%__MODULE__{fields: fields}, value) do
     is_map(value) &&
-      Enum.all?(fields, fn field ->
-        case field do
-          {key, type} ->
-            validation_check(type, value, key)
-
-          {key, type, options} ->
-            validation_check(type, value, key, options)
-        end
+      Enum.all?(fields, fn %Talos.Field{} = field ->
+        Talos.valid?(field, value)
       end)
   end
 
@@ -93,34 +85,10 @@ defmodule Talos.Types.MapType do
   end
 
   defp errors_for_fields(fields, map) do
-    fields
-    |> Enum.map(fn field ->
-      case field do
-        {key, type} ->
-          case validation_check(type, map, key) do
-            true -> nil
-            false -> {key, Talos.errors(type, map[key])}
-          end
-
-        {key, type, options} ->
-          case validation_check(type, map, key, options) do
-            true -> nil
-            false -> {key, Talos.errors(type, map[key])}
-          end
-      end
+    Enum.map(fields, fn %Talos.Field{} = field ->
+      Talos.errors(field, map)
     end)
     |> Enum.reject(&is_nil/1)
     |> Map.new()
-  end
-
-  defp validation_check(type, map, key, opts \\ %{}) do
-    options = Map.merge(@default_options, Map.new(opts))
-
-    cond do
-      options[:optional] && !Map.has_key?(map, key) -> true
-      !options[:optional] && !Map.has_key?(map, key) -> false
-      is_nil(type) -> true
-      true -> Talos.valid?(type, map[key])
-    end
   end
 end
