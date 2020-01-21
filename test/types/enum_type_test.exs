@@ -2,6 +2,7 @@ defmodule Talos.Types.EnumTypeTest do
   use ExUnit.Case
   alias Talos.Types.EnumType
   alias Talos.Types.IntegerType
+  alias Talos.Types.StringType
   alias Talos.Types.FloatType
   doctest EnumType
 
@@ -20,6 +21,11 @@ defmodule Talos.Types.EnumTypeTest do
 
     assert true == EnumType.valid?(%EnumType{members: [%IntegerType{}, %FloatType{}, "lul"]}, 1)
     assert true == EnumType.valid?(%EnumType{members: [%IntegerType{}, %FloatType{}, "lul"]}, 1.0)
+
+    assert true == EnumType.valid?(%EnumType{members: [%IntegerType{}, %StringType{}]}, 10)
+    assert true == EnumType.valid?(%EnumType{members: [%StringType{}, %IntegerType{}]}, 10)
+    assert true == EnumType.valid?(%EnumType{members: [%IntegerType{}, %StringType{}]}, "abc")
+    assert true == EnumType.valid?(%EnumType{members: [%StringType{}, %IntegerType{}]}, "abc")
 
     assert false ==
              EnumType.valid?(%EnumType{members: [%IntegerType{}, %FloatType{}, "lul"]}, "lol")
