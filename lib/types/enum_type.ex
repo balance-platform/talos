@@ -71,8 +71,11 @@ defmodule Talos.Types.EnumType do
     end
   end
 
-  defp check_if_value_is_valid_typed(%{__struct__: module} = maybe_type, value) do
-    case Kernel.function_exported?(module, :valid?, 2) do
+  defp check_if_value_is_valid_typed(%module{} = maybe_type, value) do
+    # preload for function_exported?
+    Code.ensure_loaded(module)
+    
+    case function_exported?(module, :valid?, 2) do
       true -> Talos.valid?(maybe_type, value)
       false -> false
     end

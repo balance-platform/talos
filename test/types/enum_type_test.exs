@@ -13,6 +13,8 @@ defmodule Talos.Types.EnumTypeTest do
     assert true == EnumType.valid?(%EnumType{members: [1, 2, 3, 4, 5], allow_nil: true}, nil)
     assert true == EnumType.valid?(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
     assert false == EnumType.valid?(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
+
+    assert true == EnumType.valid?(%EnumType{members: [%StringType{}, %IntegerType{}]}, "ab572080-f3f8-4046-a81a-17a35382e151")
   end
 
   test "#valid? check if types passed" do
@@ -39,6 +41,8 @@ defmodule Talos.Types.EnumTypeTest do
     assert [] == EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
 
     assert [_error_message] = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
+
+    assert [] == EnumType.errors(%EnumType{members: [%StringType{}, %IntegerType{}]}, "ab572080-f3f8-4046-a81a-17a35382e151")
   end
 
   test "#valid? - call with invalid members value" do
