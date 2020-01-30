@@ -33,10 +33,10 @@ defmodule Talos.Types.NumberType do
 
   @type t :: %{
           __struct__: atom,
-          gteq: number,
-          lteq: number,
-          gt: number,
-          lt: number,
+          gteq: nil | number,
+          lteq: nil | number,
+          gt: nil | number,
+          lt: nil | number,
           allow_nil: boolean,
           type: :float | :integer | nil
         }

@@ -34,10 +34,10 @@ defmodule Talos.Types.IntegerType do
 
   @type t :: %{
           __struct__: atom,
-          gteq: integer,
-          lteq: integer,
-          gt: integer,
-          lt: integer,
+          gteq: nil | integer,
+          lteq: nil | integer,
+          gt: nil | integer,
+          lt: nil | integer,
           allow_blank: boolean,
           allow_nil: boolean
         }

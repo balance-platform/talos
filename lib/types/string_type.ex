@@ -27,12 +27,12 @@ defmodule Talos.Types.StringType do
 
   @type t :: %{
           __struct__: atom,
-          min_length: integer,
-          length: integer,
-          max_length: integer,
-          allow_nil: boolean,
-          allow_blank: boolean,
-          regexp: Regex.t()
+          min_length: nil |integer,
+          length: nil |integer,
+          max_length: nil | integer,
+          allow_nil: nil | boolean,
+          allow_blank: nil | boolean,
+          regexp: nil | Regex.t()
         }
 
   @behaviour Talos.Types
