@@ -4,10 +4,10 @@ Talos is simple parameters validation library
 
 Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 
-## Sample example
+## Usage
 
 ```elixir
-  defmodule MyAppWeb.UserController do
+  defmodule CheckUserJSON do
     # we define required types and structs
     alias Talos.Field
     alias Talos.Types.MapType
@@ -26,25 +26,57 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
     # one struct can be nested in another
     @user_type %MapType{
       fields: [
-        %Field{key: "email" type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-        %Field{key: "age" type: %NumberType{gteq: 18}, allow_nil: true},
-        %Field{key: "interests" type: %ListType{type: @interests_type}, allow_nil: true}
+        %Field{key: "email", type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
+        %Field{key: "age", type: %NumberType{gteq: 18, allow_nil: true}},
+        %Field{key: "interests", type: %ListType{type: @interests_type}, optional: true}
       ]
     }
-    def create(conn, params) do
-      case Talos.valid?(@user_type, params) do
-        true ->
-          user = MyApp.create_user(params)
-          conn
-          |> put_flash(:info, "User created successfully.")
-          |> redirect(to: Routes.user_path(conn, :show, user))
-        false ->
-          conn
-          |> put_flash(:info, "Wrong params passed.")
-          |> render("new.html")
+
+    def valid?(map_data) do
+      errors = Talos.errors(@user_type, map_data)
+
+      case errors == %{} do
+        true -> {:ok, %{}}
+        false -> {:nok, errors}
       end
     end
   end
+
+  CheckUserJSON.valid?(%{}) 
+  # => {:nok, %{"age" => ["should exist"], "email" => ["should exist"]}}
+
+  CheckUserJSON.valid?(%{"age" => 13, "email" => "sofakingworld@gmail.com"})
+  # => {:nok, %{"age" => ["13 does not match type Talos.Types.NumberType"}}
+
+  CheckUserJSON.valid?(%{"age" => 23, "email" => "sofakingworld@gmail.com"})
+  # => {:ok, %{}}
+```
+
+## Own Type definition
+
+If you want define own Type, just create module with Talos.Types behavior
+
+```elixir
+defmodule ZipCodeType do
+  @behaviour Talos.Types
+
+  def valid?(__MODULE__, value) do
+    String.valid?(value) && String.match?(value, ~r/\d{6}/)
+  end
+
+  def errors(__MODULE__, value) do
+    case valid?(__MODULE__,value) do
+      true -> []
+      false -> ["#{value} is not zipcode"]
+    end
+  end
+end
+
+# And use it
+
+Talos.valid?(ZipCodeType, "123456") # => true
+Talos.valid?(ZipCodeType, "1234") # => false
+Talos.valid?(ZipCodeType, 123456) # => false
 ```
 
 ## Installation
@@ -52,7 +84,7 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 ```elixir
 def deps do
   [
-    {:talos, "~> 1.0.0"}
+    {:talos, "~> 1.0"}
   ]
 end
 ```
