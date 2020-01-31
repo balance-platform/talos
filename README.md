@@ -2,6 +2,8 @@
 
 [![Coverage Status](https://coveralls.io/repos/github/SofaKing18/talos/badge.svg)](https://coveralls.io/github/SofaKing18/talos)
 
+![build](https://github.com/SofaKing18/talos/workflows/Elixir%20CI/badge.svg)
+
 Talos is simple parameters validation library
 
 Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
