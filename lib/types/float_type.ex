@@ -43,26 +43,22 @@ defmodule Talos.Types.FloatType do
   @behaviour Talos.Types
 
   @spec valid?(Talos.Types.FloatType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_blank: true}, 0.0) do
-    true
+  def valid?(module, value) do
+    errors(module, value) == []
   end
 
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
+  def errors(%__MODULE__{allow_blank: true}, 0.0) do
+    []
   end
 
-  def valid?(type, value) do
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    []
+  end
+
+  def errors(type, value) do
     type
     |> wrap_type()
-    |> NumberType.valid?(value)
-  end
-
-  @spec errors(Talos.Types.FloatType.t(), any) :: list(String.t())
-  def errors(type, value) do
-    case valid?(type, value) do
-      true -> []
-      false -> ["#{inspect(value)} does not match type #{inspect(type)}"]
-    end
+    |> NumberType.errors(value)
   end
 
   defp wrap_type(%__MODULE__{gteq: gteq, lteq: lteq, gt: gt, lt: lt}) do

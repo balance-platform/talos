@@ -14,7 +14,6 @@ defmodule Talos.Types.NumberType do
     true
 
   ```
-
   Additional parameters:
 
   `allow_nil` - allows value to be nil
@@ -42,28 +41,35 @@ defmodule Talos.Types.NumberType do
         }
 
   @spec valid?(Talos.Types.NumberType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
-  end
-
-  def valid?(%__MODULE__{gteq: gteq, lteq: lteq, gt: gt, lt: lt, type: type}, value)
-      when type in [nil, :float, :integer] do
-    with true <- check_type(type, value),
-         true <- is_nil(lt) || value < lt,
-         true <- is_nil(gt) || value > gt,
-         true <- is_nil(gteq) || value >= gteq,
-         true <- is_nil(lteq) || value <= lteq do
-      true
-    else
-      false -> false
-    end
+  def valid?(type, value) do
+    errors(type, value) == []
   end
 
   @spec errors(Talos.Types.NumberType.t(), binary) :: list(String.t())
-  def errors(type, value) do
-    case valid?(type, value) do
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    []
+  end
+
+  def errors(%__MODULE__{gteq: gteq, lteq: lteq, gt: gt, lt: lt, type: type}, value) do
+    errors =
+      case check_type(type, value) do
+        true ->
+          [
+            {is_nil(lt) || value < lt, "should be lower than #{lt}"},
+            {is_nil(gt) || value > gt, "should be greater than #{gt}"},
+            {is_nil(gteq) || value >= gteq, "should be greater than or equal to #{gteq}"},
+            {is_nil(lteq) || value <= lteq, "should be lower than or equal to #{lteq}"}
+          ]
+          |> Enum.filter(fn {bool, _} -> bool == false end)
+          |> Enum.map(fn {_, error_text} -> error_text end)
+
+        false ->
+          ["should be #{type || "float or integer"} type"]
+      end
+
+    case errors == [] do
       true -> []
-      false -> ["#{inspect(value)} does not match type #{inspect(type)}"]
+      false -> [inspect(value)] ++ errors
     end
   end
 

@@ -48,47 +48,30 @@ defmodule Talos.Types.MapType do
         }
 
   @spec valid?(Talos.Types.MapType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_blank: true}, %{}) do
-    true
+  def valid?(%__MODULE__{} = module, value) do
+    errors(module, value) == %{}
   end
 
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
+  def errors(%__MODULE__{allow_blank: true}, %{}) do
+    %{}
   end
 
-  def valid?(%__MODULE__{fields: nil}, value) do
-    is_map(value)
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    %{}
   end
 
-  def valid?(%__MODULE__{fields: fields}, value) do
-    is_map(value) &&
-      Enum.all?(fields, fn %Talos.Field{} = field ->
-        Talos.valid?(field, value)
-      end)
-  end
-
-  @spec errors(Talos.Types.MapType.t(), binary) :: list(String.t()) | map
-  def errors(%__MODULE__{fields: fields} = type, value) do
-    cond do
-      is_nil(fields) && is_map(value) ->
-        %{}
-
-      !is_map(value) ->
-        ["#{inspect(value)} does not match #{inspect(type)}"]
-
-      !valid?(type, value) ->
-        errors_for_fields(fields, value)
+  def errors(%__MODULE__{fields: fields}, map) do
+    case is_map(map) do
+      false ->
+        [inspect(map), "should be MapType"]
 
       true ->
-        %{}
+        (fields || [])
+        |> Enum.map(fn %Talos.Field{} = field ->
+          Talos.errors(field, map)
+        end)
+        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+        |> Map.new()
     end
-  end
-
-  defp errors_for_fields(fields, map) do
-    Enum.map(fields, fn %Talos.Field{} = field ->
-      Talos.errors(field, map)
-    end)
-    |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-    |> Map.new()
   end
 end

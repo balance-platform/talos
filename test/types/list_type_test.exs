@@ -36,10 +36,11 @@ defmodule Talos.Types.ListTypeTest do
 
     assert [] == ListType.errors(%ListType{type: number_type}, [])
 
-    assert [error_msg] = ListType.errors(%ListType{type: number_type}, 1)
-    assert error_msg =~ ~r/1 does not match/
-    assert [error_msg1, error_msg2] = ListType.errors(%ListType{type: number_type}, [-1, -2])
-    assert error_msg1 =~ ~r/-1 does not match/
-    assert error_msg2 =~ ~r/-2 does not match/
+    assert ["1", "should be ListType"] = ListType.errors(%ListType{type: number_type}, 1)
+
+    assert [
+             ["-1", "should be greater than or equal to 0"],
+             ["-2", "should be greater than or equal to 0"]
+           ] = ListType.errors(%ListType{type: number_type}, [-1, -2])
   end
 end
