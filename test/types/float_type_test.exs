@@ -38,11 +38,11 @@ defmodule Talos.Types.FloatTypeTest do
 
   test "#errors - default params" do
     assert [] == FloatType.errors(%FloatType{}, 1.0)
-    assert [_error_message] = FloatType.errors(%FloatType{}, 1)
-    assert [_error_message] = FloatType.errors(%FloatType{}, "String")
-    assert [_error_message] = FloatType.errors(%FloatType{}, %{})
-    assert [_error_message] = FloatType.errors(%FloatType{}, nil)
-    assert [_error_messages] = FloatType.errors(%FloatType{}, DateTime.utc_now())
-    assert [_error_message] = FloatType.errors(%FloatType{}, [])
+    assert ["1", _error_message] = FloatType.errors(%FloatType{}, 1)
+    assert [_string, _error_message] = FloatType.errors(%FloatType{}, "String")
+    assert [_map, _error_message] = FloatType.errors(%FloatType{}, %{})
+    assert [_nil, _error_message] = FloatType.errors(%FloatType{}, nil)
+    assert [_datetime, _error_messages] = FloatType.errors(%FloatType{}, DateTime.utc_now())
+    assert [_list, _error_message] = FloatType.errors(%FloatType{}, [])
   end
 end

@@ -27,8 +27,8 @@ defmodule Talos.Types.StringType do
 
   @type t :: %{
           __struct__: atom,
-          min_length: nil |integer,
-          length: nil |integer,
+          min_length: nil | integer,
+          length: nil | integer,
           max_length: nil | integer,
           allow_nil: nil | boolean,
           allow_blank: nil | boolean,
@@ -38,35 +38,45 @@ defmodule Talos.Types.StringType do
   @behaviour Talos.Types
 
   @spec valid?(Talos.Types.StringType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_blank: true}, "") do
-    true
-  end
-
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
-  end
-
-  def valid?(
-        %__MODULE__{regexp: regexp, min_length: min_len, length: len, max_length: max_len},
-        value
-      ) do
-    with true <- String.valid?(value),
-         str_len <- String.length(value),
-         true <- is_nil(min_len) || min_len <= str_len,
-         true <- is_nil(len) || len == str_len,
-         true <- is_nil(max_len) || str_len <= max_len,
-         true <- is_nil(regexp) || Regex.match?(regexp, value) do
-      true
-    else
-      false -> false
-    end
+  def valid?(type, value) do
+    errors(type, value) == []
   end
 
   @spec errors(Talos.Types.StringType.t(), binary) :: list(String.t())
-  def errors(type, value) do
-    case valid?(type, value) do
+  def errors(%__MODULE__{allow_blank: true}, "") do
+    []
+  end
+
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    []
+  end
+
+  def errors(
+        %__MODULE__{regexp: regexp, min_length: min_len, length: len, max_length: max_len},
+        value
+      ) do
+    errors =
+      case String.valid?(value) do
+        true ->
+          str_len = String.length(value)
+
+          [
+            {is_nil(min_len) || min_len <= str_len, "minimum length: #{min_len}"},
+            {is_nil(len) || len == str_len, "length should be equal #{len}"},
+            {is_nil(max_len) || str_len <= max_len, "maximum length #{max_len}"},
+            {is_nil(regexp) || Regex.match?(regexp, value),
+             "should match given regexp #{inspect(regexp)}"}
+          ]
+          |> Enum.filter(fn {bool, _} -> bool == false end)
+          |> Enum.map(fn {_, error_text} -> error_text end)
+
+        false ->
+          ["should be StringType"]
+      end
+
+    case errors == [] do
       true -> []
-      false -> ["#{inspect(value)} does not match type #{inspect(type)}"]
+      false -> [inspect(value)] ++ errors
     end
   end
 end

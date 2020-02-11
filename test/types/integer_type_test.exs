@@ -38,13 +38,13 @@ defmodule Talos.Types.IntegerTest do
 
   test "#errors - default params" do
     assert [] == IntegerType.errors(%IntegerType{}, 1)
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, 1.0)
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, "String")
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, %{})
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, nil)
+    assert ["1.0", _error_message] = IntegerType.errors(%IntegerType{}, 1.0)
+    assert [_string, _error_message] = IntegerType.errors(%IntegerType{}, "String")
+    assert [_map, _error_message] = IntegerType.errors(%IntegerType{}, %{})
+    assert ["nil", _error_message] = IntegerType.errors(%IntegerType{}, nil)
 
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, DateTime.utc_now())
+    assert [_datetime, _error_message] = IntegerType.errors(%IntegerType{}, DateTime.utc_now())
 
-    assert [_error_message] = IntegerType.errors(%IntegerType{}, [])
+    assert ["[]", _error_message] = IntegerType.errors(%IntegerType{}, [])
   end
 end
