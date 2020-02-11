@@ -37,12 +37,12 @@ defmodule Talos.Types.NumberTypeTest do
     assert [] == NumberType.errors(%NumberType{}, 1)
     assert [] == NumberType.errors(%NumberType{}, 1.0)
 
-    assert [_error_message] = NumberType.errors(%NumberType{type: :integer}, 1.0)
-    assert [_error_message] = NumberType.errors(%NumberType{}, "String")
-    assert [_error_message] = NumberType.errors(%NumberType{}, %{})
-    assert [_error_message] = NumberType.errors(%NumberType{}, nil)
-    assert [_error_message] = NumberType.errors(%NumberType{}, DateTime.utc_now())
-    assert [_error_message] = NumberType.errors(%NumberType{}, [])
+    assert ["1.0", _error_message] = NumberType.errors(%NumberType{type: :integer}, 1.0)
+    assert ["\"String\"", _error_message] = NumberType.errors(%NumberType{}, "String")
+    assert ["%{}", _error_message] = NumberType.errors(%NumberType{}, %{})
+    assert ["nil", _error_message] = NumberType.errors(%NumberType{}, nil)
+    assert [_datetime, _error_message] = NumberType.errors(%NumberType{}, DateTime.utc_now())
+    assert ["[]", _error_message] = NumberType.errors(%NumberType{}, [])
   end
 
   test "#valid? - called with wrong type" do

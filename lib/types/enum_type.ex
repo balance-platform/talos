@@ -49,39 +49,44 @@ defmodule Talos.Types.EnumType do
   @behaviour Talos.Types
 
   @spec valid?(Talos.Types.EnumType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
+  def valid?(type, value) do
+    errors(type, value) == []
   end
 
-  def valid?(%__MODULE__{members: members}, value) when is_list(members) do
-    value in members ||
-      Enum.any?(members, fn something ->
-        check_if_value_is_valid_typed(something, value)
-      end)
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    []
   end
 
-  @spec errors(Talos.Types.EnumType.t(), any) :: list(String.t())
-  def errors(type, value) do
-    case valid?(type, value) do
+  def errors(%__MODULE__{members: members}, value) when is_list(members) do
+    case value in members do
       true ->
         []
 
       false ->
-        ["#{inspect(value)} does not match type #{inspect(type)}"]
+        errors =
+          members
+          |> Enum.map(fn something ->
+            errors_for_members(something, value)
+          end)
+
+        case Enum.any?(errors, fn error -> error in [%{}, []] end) do
+          true -> []
+          false -> errors
+        end
     end
   end
 
-  defp check_if_value_is_valid_typed(%module{} = maybe_type, value) do
+  defp errors_for_members(%module{} = maybe_type, value) do
     # preload for function_exported?
     Code.ensure_loaded(module)
-    
-    case function_exported?(module, :valid?, 2) do
-      true -> Talos.valid?(maybe_type, value)
-      false -> false
+
+    case function_exported?(module, :errors, 2) do
+      true -> Talos.errors(maybe_type, value)
+      false -> [inspect(value), "should be #{module}"]
     end
   end
 
-  defp check_if_value_is_valid_typed(_something, _value) do
-    false
+  defp errors_for_members(something, _value) do
+    "allowed value is #{inspect(something)}"
   end
 end

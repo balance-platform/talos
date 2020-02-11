@@ -29,10 +29,10 @@ defmodule Talos.Types.MapTypeTest do
   end
 
   test "#errors for simple cases" do
-    assert [_error_message] = MapType.errors(%MapType{}, 5)
-    assert [_error_message] = MapType.errors(%MapType{}, 0)
-    assert [_error_message] = MapType.errors(%MapType{}, "e")
-    assert [_error_message] = MapType.errors(%MapType{}, "z")
+    assert ["5", _error_message] = MapType.errors(%MapType{}, 5)
+    assert ["0", _error_message] = MapType.errors(%MapType{}, 0)
+    assert ["\"e\"", _error_message] = MapType.errors(%MapType{}, "e")
+    assert ["\"z\"", _error_message] = MapType.errors(%MapType{}, "z")
     assert %{} == MapType.errors(%MapType{}, %{})
     assert %{} == MapType.errors(%MapType{}, %{a: 3, b: 4})
   end

@@ -41,48 +41,37 @@ defmodule Talos.Types.ListType do
           allow_nil: boolean
         }
   @spec valid?(Talos.Types.ListType.t(), any) :: boolean
-  def valid?(%__MODULE__{allow_blank: true}, []) do
-    true
-  end
-
-  def valid?(%__MODULE__{allow_nil: true}, nil) do
-    true
-  end
-
-  def valid?(%__MODULE__{type: type}, values) do
-    is_list(values) &&
-      Enum.all?(values, fn value ->
-        valid_value?(type, value)
-      end)
+  def valid?(module, value) do
+    errors(module, value) == []
   end
 
   @spec errors(Talos.Types.ListType.t(), any) :: list(String.t())
-  def errors(%__MODULE__{type: element_type} = array_type, values) do
-    cond do
-      !is_list(values) ->
-        ["#{inspect(values)} does not match #{inspect(array_type)}"]
+  def errors(%__MODULE__{allow_blank: true}, []) do
+    []
+  end
 
-      !valid?(array_type, values) ->
+  def errors(%__MODULE__{allow_nil: true}, nil) do
+    []
+  end
+
+  def errors(%__MODULE__{type: element_type} = _array_type, values) do
+    case is_list(values) do
+      true ->
         return_only_errors(element_type, values)
 
-      true ->
-        []
+      false ->
+        [inspect(values), "should be ListType"]
     end
   end
 
   defp return_only_errors(element_type, values) do
     values
-    |> Enum.reject(fn val -> valid_value?(element_type, val) end)
-    |> Enum.map(fn element -> element_errors(element_type, element) end)
-    |> List.flatten()
+    |> Enum.map(fn val -> element_errors(element_type, val) end)
+    |> Enum.reject(fn element -> element in [%{}, []] end)
   end
 
-  defp valid_value?(nil = _element_type, _value) do
-    true
-  end
-
-  defp valid_value?(type_description, value) do
-    Talos.valid?(type_description, value)
+  defp element_errors(nil = _type_description, _value) do
+    []
   end
 
   defp element_errors(type_description, value) do

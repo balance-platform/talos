@@ -14,7 +14,11 @@ defmodule Talos.Types.EnumTypeTest do
     assert true == EnumType.valid?(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
     assert false == EnumType.valid?(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
 
-    assert true == EnumType.valid?(%EnumType{members: [%StringType{}, %IntegerType{}]}, "ab572080-f3f8-4046-a81a-17a35382e151")
+    assert true ==
+             EnumType.valid?(
+               %EnumType{members: [%StringType{}, %IntegerType{}]},
+               "ab572080-f3f8-4046-a81a-17a35382e151"
+             )
   end
 
   test "#valid? check if types passed" do
@@ -36,13 +40,18 @@ defmodule Talos.Types.EnumTypeTest do
   test "errors - returns list with error element" do
     assert [] == EnumType.errors(%EnumType{members: [1, 2, 3, 4, 5]}, 5)
 
-    assert [_error_message] = EnumType.errors(%EnumType{members: [1, 2, 3, 4, 5]}, 0)
+    assert [_error1, _error2, _error3, _error4, _error5] =
+             EnumType.errors(%EnumType{members: [1, 2, 3, 4, 5]}, 0)
 
     assert [] == EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
 
-    assert [_error_message] = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
+    assert errors = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
 
-    assert [] == EnumType.errors(%EnumType{members: [%StringType{}, %IntegerType{}]}, "ab572080-f3f8-4046-a81a-17a35382e151")
+    assert [] ==
+             EnumType.errors(
+               %EnumType{members: [%StringType{}, %IntegerType{}]},
+               "ab572080-f3f8-4046-a81a-17a35382e151"
+             )
   end
 
   test "#valid? - call with invalid members value" do

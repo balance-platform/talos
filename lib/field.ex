@@ -1,5 +1,6 @@
 defmodule Talos.Field do
   @moduledoc false
+
   # Belongs mostly to MapType, and used for key-value pairs
 
   @enforce_keys [:key, :type]
@@ -14,19 +15,11 @@ defmodule Talos.Field do
           optional: boolean
         }
 
-  def valid?(%__MODULE__{optional: is_optional} = field, expected_map_value)
+  def valid?(%__MODULE__{} = field, expected_map_value)
       when is_map(expected_map_value) do
-    is_key_missed = !Map.has_key?(expected_map_value, field.key)
+    {_key, errors} = errors(field, expected_map_value)
 
-    if is_key_missed do
-      is_optional
-    else
-      Talos.valid?(field.type, expected_map_value[field.key])
-    end
-  end
-
-  def valid?(_field, _not_map_value) do
-    false
+    errors in [%{}, []]
   end
 
   def errors(%__MODULE__{optional: is_optional} = field, expected_map_value)
@@ -38,9 +31,5 @@ defmodule Talos.Field do
       is_key_missed && is_optional -> {field.key, []}
       true -> {field.key, Talos.errors(field.type, expected_map_value[field.key])}
     end
-  end
-
-  def errors(_field, _not_map_value) do
-    false
   end
 end

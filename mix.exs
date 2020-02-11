@@ -12,7 +12,7 @@ defmodule Talos.MixProject do
       package: package(),
       test_coverage: [tool: ExCoveralls],
       deps: deps(),
-      source_url: "https://github.com/SofaKing18/talos",
+      source_url: "https://github.com/sofakingworld/talos",
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -25,8 +25,8 @@ defmodule Talos.MixProject do
       ],
       # Docs
       name: "Talos",
-      source_url: "https://github.com/SofaKing18/talos",
-      homepage_url: "https://github.com/SofaKing18/talos",
+      source_url: "https://github.com/sofakingworld/talos",
+      homepage_url: "https://github.com/sofakingworld/talos",
       docs: [
         main: "Talos",
         extras: ["README.md"]
@@ -62,7 +62,7 @@ defmodule Talos.MixProject do
       # These are the default files included in the package
       files: ~w(lib .formatter.exs mix.exs README* CHANGELOG*),
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/SofaKing18/talos"}
+      links: %{"GitHub" => "https://github.com/sofakingworld/talos"}
     ]
   end
 end
