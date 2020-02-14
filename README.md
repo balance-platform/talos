@@ -70,7 +70,7 @@ Somewhere in UserController
 
 ## Own Type definition
 
-If you want define own Type, just create module with Talos.Types behavior
+If you want define own Type, just create module with `Talos.Types` behavior
 
 ```elixir
 defmodule ZipCodeType do
