@@ -7,6 +7,10 @@ Talos is simple parameters validation library
 
 Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 
+## Why another one validation library?
+
+I needed more checks than just whether the value belonged to one or another type. And I do not like the existing solutions with DSL, which significantly change the language
+
 ## Usage
 
 ```elixir
@@ -35,24 +39,33 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
       ]
     }
 
-    def valid?(map_data) do
+    def validate(map_data) do
       errors = Talos.errors(@user_type, map_data)
 
       case errors == %{} do
-        true -> {:ok, %{}}
-        false -> {:nok, errors}
+        true -> :ok
+        false -> {:error, errors}
       end
     end
   end
+```
 
-  CheckUserJSON.valid?(%{}) 
-  # => {:nok, %{"age" => ["should exist"], "email" => ["should exist"]}}
+Somewhere in UserController
+```elixir
 
-  CheckUserJSON.valid?(%{"age" => 13, "email" => "sofakingworld@gmail.com"})
-  # => {:nok, %{"age" => ["13 does not match type Talos.Types.NumberType"}}
+  ...
 
-  CheckUserJSON.valid?(%{"age" => 23, "email" => "sofakingworld@gmail.com"})
-  # => {:ok, %{}}
+  def new_user(conn, params)
+    case CheckUserJSON.valid?(params) do
+       :ok -> 
+          result = MyApp.register_user!(params)
+          render_json(%{"ok" => true)
+       {:error, errors} -> 
+          render_json_errors(errors)
+    end
+  end
+  
+  ...
 ```
 
 ## Own Type definition
