@@ -30,7 +30,7 @@ defmodule Talos.Types.IntegerType do
   `lt` - lower than, same as `<`
   """
   alias Talos.Types.NumberType
-  defstruct [:gteq, :lteq, :gt, :lt, allow_nil: false, allow_blank: false]
+  defstruct [:gteq, :lteq, :gt, :lt, allow_nil: false, example_value: nil, allow_blank: false]
 
   @type t :: %{
           __struct__: atom,
@@ -39,7 +39,8 @@ defmodule Talos.Types.IntegerType do
           gt: nil | integer,
           lt: nil | integer,
           allow_blank: boolean,
-          allow_nil: boolean
+          allow_nil: boolean,
+          example_value: any
         }
   @behaviour Talos.Types
 

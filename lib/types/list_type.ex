@@ -31,14 +31,15 @@ defmodule Talos.Types.ListType do
   `type` - defines type of array elements
 
   """
-  defstruct [:type, allow_nil: false, allow_blank: false]
+  defstruct [:type, allow_nil: false, allow_blank: false, example_value: nil]
 
   @behaviour Talos.Types
   @type t :: %{
           __struct__: atom,
           type: struct | module | nil,
           allow_blank: boolean,
-          allow_nil: boolean
+          allow_nil: boolean,
+          example_value: any
         }
   @spec valid?(Talos.Types.ListType.t(), any) :: boolean
   def valid?(module, value) do

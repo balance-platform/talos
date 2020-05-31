@@ -17,11 +17,12 @@ defmodule Talos.Types.FixedType do
   Additional parameters:
   `allow_nil` - allows value to be nil
   """
-  defstruct [:value, allow_nil: false]
+  defstruct [:value, allow_nil: false, example_value: nil]
 
   @type t :: %{
           __struct__: atom,
           allow_nil: boolean,
+          example_value: any
         }
 
   @behaviour Talos.Types
@@ -35,7 +36,7 @@ defmodule Talos.Types.FixedType do
     []
   end
 
-  def errors(%__MODULE__{value: expected_value} = expected, value)  do
+  def errors(%__MODULE__{value: expected_value} = expected, value) do
     case expected_value == value do
       true -> []
       false -> [inspect(value), "Should be #{inspect(expected)}"]

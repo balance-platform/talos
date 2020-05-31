@@ -27,7 +27,7 @@ defmodule Talos.Types.NumberType do
   `lt` - lower than, same as `<`
 
   """
-  defstruct [:gteq, :lteq, :gt, :lt, :type, allow_nil: false]
+  defstruct [:gteq, :lteq, :gt, :lt, :type, allow_nil: false, example_value: nil]
   @behaviour Talos.Types
 
   @type t :: %{
@@ -37,6 +37,7 @@ defmodule Talos.Types.NumberType do
           gt: nil | number,
           lt: nil | number,
           allow_nil: boolean,
+          example_value: any,
           type: :float | :integer | nil
         }
 

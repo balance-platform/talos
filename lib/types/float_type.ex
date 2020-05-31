@@ -27,7 +27,7 @@ defmodule Talos.Types.FloatType do
 
   `lt` - lower than, same as `<`
   """
-  defstruct [:gteq, :lteq, :gt, :lt, allow_nil: false, allow_blank: false]
+  defstruct [:gteq, :lteq, :gt, :lt, allow_nil: false, example_value: nil, allow_blank: false]
 
   @type t :: %{
           __struct__: atom,
@@ -36,7 +36,8 @@ defmodule Talos.Types.FloatType do
           gt: float,
           lt: float,
           allow_blank: boolean,
-          allow_nil: boolean
+          allow_nil: boolean,
+          example_value: any
         }
 
   alias Talos.Types.NumberType

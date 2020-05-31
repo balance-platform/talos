@@ -23,7 +23,15 @@ defmodule Talos.Types.StringType do
   `regexp`, same as `String.match?(str, regexp)`
 
   """
-  defstruct [:min_length, :length, :max_length, :regexp, allow_nil: false, allow_blank: false]
+  defstruct [
+    :min_length,
+    :length,
+    :max_length,
+    :regexp,
+    allow_nil: false,
+    allow_blank: false,
+    example_value: nil
+  ]
 
   @type t :: %{
           __struct__: atom,
@@ -32,7 +40,8 @@ defmodule Talos.Types.StringType do
           max_length: nil | integer,
           allow_nil: nil | boolean,
           allow_blank: nil | boolean,
-          regexp: nil | Regex.t()
+          regexp: nil | Regex.t(),
+          example_value: any
         }
 
   @behaviour Talos.Types

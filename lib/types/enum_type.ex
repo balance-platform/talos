@@ -38,12 +38,13 @@ defmodule Talos.Types.EnumType do
   `members` - list of possible values or TalosTypes
 
   """
-  defstruct [:members, allow_nil: false]
+  defstruct [:members, allow_nil: false, example_value: nil]
 
   @type t :: %{
           __struct__: atom,
           allow_nil: boolean,
-          members: maybe_improper_list
+          members: maybe_improper_list,
+          example_value: any
         }
 
   @behaviour Talos.Types
