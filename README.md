@@ -1,7 +1,7 @@
 # Talos
 
-[![Coverage Status](https://coveralls.io/repos/github/sofakingworld/talos/badge.svg)](https://coveralls.io/github/sofakingworld/talos)
-![build](https://github.com/sofakingworld/talos/workflows/Elixir%20CI/badge.svg)
+[![Coverage Status](https://coveralls.io/repos/github/CatTheMagician/talos/badge.svg)](https://coveralls.io/github/CatTheMagician/talos)
+![build](https://github.com/CatTheMagician/talos/workflows/Elixir%20CI/badge.svg)
 
 Talos is simple parameters validation library
 
