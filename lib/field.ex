@@ -4,7 +4,7 @@ defmodule Talos.Field do
   # Belongs mostly to MapType, and used for key-value pairs
 
   @enforce_keys [:key, :type]
-  defstruct [:key, :type, :description, :default_value, optional: false]
+  defstruct [:key, :type, :description, :default_value, example_value: nil, optional: false]
 
   @type t :: %{
           __struct__: atom,
@@ -12,6 +12,7 @@ defmodule Talos.Field do
           type: any,
           description: String.t(),
           default_value: any,
+          example_value: any,
           optional: boolean
         }
 
