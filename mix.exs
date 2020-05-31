@@ -5,7 +5,7 @@ defmodule Talos.MixProject do
     [
       app: :talos,
       version: "1.2.1",
-      elixir: ">= 1.8",
+      elixir: ">= 1.8.0",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
       description: description(),
