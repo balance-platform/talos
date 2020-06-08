@@ -61,6 +61,7 @@ defmodule Talos.Helpers.SchemaToMapTest do
                  description: "some id",
                  key: "id",
                  optional: false,
+                 type_name: "Talos.Types.EnumType",
                  type: %{
                    allow_nil: false,
                    example_value: "ID-123456",
@@ -73,7 +74,7 @@ defmodule Talos.Helpers.SchemaToMapTest do
                        max_length: nil,
                        min_length: nil,
                        regexp: nil,
-                       type_name: "Talos.Types.StringType"
+                       type_name: Talos.Types.StringType
                      },
                      %{
                        allow_blank: false,
@@ -83,18 +84,18 @@ defmodule Talos.Helpers.SchemaToMapTest do
                        gteq: nil,
                        lt: nil,
                        lteq: nil,
-                       type_name: "Talos.Types.IntegerType"
+                       type_name: Talos.Types.IntegerType
                      }
                    ],
-                   type_name: "Talos.Types.EnumType"
-                 },
-                 type_name: "Talos.Types.EnumType"
+                   type_name: Talos.Types.EnumType
+                 }
                },
                %{
                  default_value: nil,
                  description: "user uid",
                  key: "user_uid",
                  optional: true,
+                 type_name: "Talos.Types.StringType",
                  type: %{
                    allow_blank: false,
                    allow_nil: false,
@@ -103,9 +104,8 @@ defmodule Talos.Helpers.SchemaToMapTest do
                    max_length: nil,
                    min_length: nil,
                    regexp: nil,
-                   type_name: "Talos.Types.StringType"
-                 },
-                 type_name: "Talos.Types.StringType"
+                   type_name: Talos.Types.StringType
+                 }
                },
                %{
                  default_value: nil,
@@ -122,13 +122,13 @@ defmodule Talos.Helpers.SchemaToMapTest do
                        description: "action name",
                        key: "action",
                        optional: false,
+                       type_name: "Talos.Types.FixedType",
                        type: %{
                          allow_nil: false,
                          example_value: nil,
-                         type_name: "Talos.Types.FixedType",
-                         value: "transfer_money"
-                       },
-                       type_name: "Talos.Types.FixedType"
+                         value: "transfer_money",
+                         type_name: Talos.Types.FixedType
+                       }
                      },
                      %{
                        default_value: nil,
@@ -150,7 +150,6 @@ defmodule Talos.Helpers.SchemaToMapTest do
                                allow_blank: false,
                                allow_nil: false,
                                example_value: nil,
-                               type_name: "Talos.Types.ListType",
                                type: %{
                                  allow_blank: false,
                                  allow_nil: false,
@@ -159,17 +158,21 @@ defmodule Talos.Helpers.SchemaToMapTest do
                                  gteq: nil,
                                  lt: nil,
                                  lteq: nil,
-                                 type_name: "Talos.Types.IntegerType"
-                               }
+                                 type_name: Talos.Types.IntegerType
+                               },
+                               type_name: Talos.Types.ListType
                              }
                            }
-                         ]
+                         ],
+                         type_name: Talos.Types.MapType
                        }
                      }
-                   ]
+                   ],
+                   type_name: Talos.Types.MapType
                  }
                }
-             ]
+             ],
+             type_name: Talos.Types.MapType
            }
   end
 end

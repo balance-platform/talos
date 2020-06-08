@@ -9,9 +9,9 @@ defmodule Talos.Helpers.SchemaToMap do
   alias Talos.Types.ListType
 
   def convert(%MapType{} = schema) do
-    fields = Enum.map(schema.fields, &convert/1)
+    fields = Enum.map(schema.fields || [], &convert/1)
 
-    Map.from_struct(%MapType{schema | fields: fields})
+    struct_to_map(%MapType{schema | fields: fields})
   end
 
   def convert(%EnumType{} = enum) do
@@ -61,6 +61,8 @@ defmodule Talos.Helpers.SchemaToMap do
         end
       end)
 
-    Map.new(tuples)
+    map = Map.new(tuples)
+
+    Map.put(map, :type_name, struct.__struct__)
   end
 end
