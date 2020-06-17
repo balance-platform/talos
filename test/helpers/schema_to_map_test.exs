@@ -52,7 +52,7 @@ defmodule Talos.Helpers.SchemaToMapTest do
   }
 
   test "#returns expected info" do
-    assert SchemaToMap.convert(@long_schema) == %{
+    assert %{
              allow_blank: false,
              allow_nil: false,
              fields: [
@@ -149,6 +149,8 @@ defmodule Talos.Helpers.SchemaToMapTest do
                              type: %{
                                allow_blank: false,
                                allow_nil: false,
+                               min_length: nil,
+                               max_length: nil,
                                example_value: nil,
                                type: %{
                                  allow_blank: false,
@@ -173,6 +175,6 @@ defmodule Talos.Helpers.SchemaToMapTest do
                }
              ],
              type_name: Talos.Types.MapType
-           }
+           } = SchemaToMap.convert(@long_schema)
   end
 end

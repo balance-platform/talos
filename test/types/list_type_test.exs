@@ -9,6 +9,16 @@ defmodule Talos.Types.ListTypeTest do
     assert true == ListType.valid?(%ListType{}, [1])
     assert true == ListType.valid?(%ListType{}, [1, 2, "string"])
     assert true == ListType.valid?(%ListType{allow_nil: true}, [1, 2, "string"])
+    assert false == ListType.valid?(%ListType{allow_nil: true, min_length: 5}, [1, 2, "string"])
+    assert false == ListType.valid?(%ListType{allow_nil: true, max_length: 2}, [1, 2, "string"])
+
+    assert true ==
+             ListType.valid?(%ListType{allow_nil: true, min_length: 3, max_length: 3}, [
+               1,
+               2,
+               "string"
+             ])
+
     assert false == ListType.valid?(%ListType{}, nil)
     assert false == ListType.valid?(%ListType{}, 1)
     assert false == ListType.valid?(%ListType{}, "string")
@@ -39,8 +49,15 @@ defmodule Talos.Types.ListTypeTest do
     assert ["1", "should be ListType"] = ListType.errors(%ListType{type: number_type}, 1)
 
     assert [
+             "List length should be greater than 5",
              ["-1", "should be greater than or equal to 0"],
              ["-2", "should be greater than or equal to 0"]
-           ] = ListType.errors(%ListType{type: number_type}, [-1, -2])
+           ] = ListType.errors(%ListType{type: number_type, min_length: 5}, [-1, -2])
+
+    assert [
+             "List length should be lower than 1",
+             ["-1", "should be greater than or equal to 0"],
+             ["-2", "should be greater than or equal to 0"]
+           ] = ListType.errors(%ListType{type: %NumberType{gteq: 0}, max_length: 1}, [-1, -2, 3])
   end
 end

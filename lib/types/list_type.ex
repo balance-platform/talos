@@ -31,7 +31,14 @@ defmodule Talos.Types.ListType do
   `type` - defines type of array elements
 
   """
-  defstruct [:type, allow_nil: false, allow_blank: false, example_value: nil]
+  defstruct [
+    :type,
+    allow_nil: false,
+    allow_blank: false,
+    example_value: nil,
+    min_length: nil,
+    max_length: nil
+  ]
 
   @behaviour Talos.Types
   @type t :: %{
@@ -55,10 +62,25 @@ defmodule Talos.Types.ListType do
     []
   end
 
-  def errors(%__MODULE__{type: element_type} = _array_type, values) do
+  def errors(
+        %__MODULE__{type: element_type, min_length: min_len, max_length: max_len} = _array_type,
+        values
+      ) do
     case is_list(values) do
       true ->
-        return_only_errors(element_type, values)
+        length_errors =
+          cond do
+            !is_nil(min_len) && length(values) < min_len ->
+              ["List length should be greater than #{min_len}"]
+
+            !is_nil(max_len) && length(values) > max_len ->
+              ["List length should be lower than #{max_len}"]
+
+            true ->
+              []
+          end
+
+        length_errors ++ return_only_errors(element_type, values)
 
       false ->
         [inspect(values), "should be ListType"]
