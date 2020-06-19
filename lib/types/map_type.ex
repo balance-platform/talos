@@ -52,26 +52,26 @@ defmodule Talos.Types.MapType do
     errors(module, value) == %{}
   end
 
-  def errors(%__MODULE__{allow_blank: true}, %{}) do
-    %{}
-  end
-
   def errors(%__MODULE__{allow_nil: true}, nil) do
     %{}
   end
 
-  def errors(%__MODULE__{fields: fields}, map) do
-    case is_map(map) do
-      false ->
-        [inspect(map), "should be MapType"]
+  def errors(%__MODULE__{fields: fields, allow_blank: allow_blank}, map) do
+    if is_map(map) && Map.keys(map) == [] && allow_blank do 
+      %{}
+    else 
+      case is_map(map) do
+        false ->
+          [inspect(map), "should be MapType"]
 
-      true ->
-        (fields || [])
-        |> Enum.map(fn %Talos.Field{} = field ->
-          Talos.errors(field, map)
-        end)
-        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-        |> Map.new()
+        true ->
+          (fields || [])
+          |> Enum.map(fn %Talos.Field{} = field ->
+            Talos.errors(field, map)
+          end)
+          |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+          |> Map.new()
+      end
     end
   end
 end

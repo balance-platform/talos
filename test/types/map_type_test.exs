@@ -77,7 +77,16 @@ defmodule Talos.Types.MapTypeTest do
   end
 
   test "#valid? with allow_blank" do
-    assert true == MapType.valid?(%MapType{allow_blank: true}, %{})
+    schema = %MapType{
+      allow_blank: true,
+      fields: [
+        %Field{key: "name", type: %StringType{allow_nil: true}, optional: false},
+        %Field{key: "age", type: %IntegerType{gteq: 18, allow_nil: true}, optional: false}
+      ]
+    }
+
+    assert false == MapType.valid?(schema, %{"key" => "value"})
+    assert true == MapType.valid?(schema, %{})
   end
 
   test "#errors for cases with optional fields" do
