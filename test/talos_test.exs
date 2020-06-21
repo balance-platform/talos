@@ -50,4 +50,70 @@ defmodule TalosTest do
              "users" => [_errors_message]
            } = Talos.errors(@request_type, %{})
   end
+
+  describe "DSL tests" do
+    use Talos
+
+    test "MapType" do
+      assert %MapType{allow_blank: false, allow_nil: false, fields: []} = map(fields: [])
+      assert %MapType{allow_blank: false, allow_nil: false, fields: nil} = map()
+
+      assert %MapType{allow_blank: true, allow_nil: true, fields: nil} =
+               map(allow_nil: true, allow_blank: true)
+
+      assert %MapType{allow_blank: true, allow_nil: true, fields: nil} =
+               map(allow_nil: true, allow_blank: true)
+
+      # With Feilds
+      assert %MapType{
+               allow_blank: false,
+               allow_nil: false,
+               fields: [%Field{key: "some_key", optional: false, type: %StringType{}}]
+             } =
+               map(
+                 fields: [
+                   field(key: "some_key", type: string())
+                 ]
+               )
+    end
+
+    test "StringType" do
+      assert %StringType{} = string()
+      assert %StringType{max_length: 3} = string(max_length: 3)
+    end
+
+    test "Nested" do
+      user =
+        map(
+          fields: [
+            field(
+              key: "email",
+              type: string(min_length: 5, max_length: 255, regexp: ~r/.*@.*/)
+            ),
+            field(key: "age", type: number(gteq: 18, allow_nil: true)),
+            field(
+              key: "interests",
+              type:
+                list(
+                  allow_nil: true,
+                  type: enum(members: ["sports", "games", "food"])
+                )
+            )
+          ]
+        )
+
+      dsl_schema =
+        map(
+          fields: [
+            field(key: "action", type: enum(members: ["create_users", "notify_users"])),
+            field(
+              key: "users",
+              type: list(type: user)
+            )
+          ]
+        )
+
+      assert dsl_schema == @request_type
+    end
+  end
 end

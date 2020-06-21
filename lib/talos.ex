@@ -48,8 +48,6 @@ defmodule Talos do
   ```
   """
 
-  alias Talos.Types.MapType
-
   @spec valid?(struct | module, any) :: boolean
   def valid?(%{__struct__: type_module} = data_type, data) do
     type_module.valid?(data_type, data)
@@ -66,5 +64,59 @@ defmodule Talos do
 
   def errors(module, value) do
     module.errors(module, value)
+  end
+
+  defmacro __using__(_any) do
+    quote do
+      def map(args \\ []) do
+        talos_build_struct(%Talos.Types.MapType{}, args)
+      end
+
+      def field(args \\ []) do
+        talos_build_struct(
+          %Talos.Types.MapType.Field{
+            key: Keyword.get(args, :key),
+            type: Keyword.get(args, :key)
+          },
+          args
+        )
+      end
+
+      def enum(args \\ []) do
+        talos_build_struct(%Talos.Types.EnumType{}, args)
+      end
+
+      def fixed(args \\ []) do
+        talos_build_struct(%Talos.Types.FixedType{}, args)
+      end
+
+      def float(args \\ []) do
+        talos_build_struct(%Talos.Types.FloatType{}, args)
+      end
+
+      def integer(args \\ []) do
+        talos_build_struct(%Talos.Types.IntegerType{}, args)
+      end
+
+      def list(args \\ []) do
+        talos_build_struct(%Talos.Types.ListType{}, args)
+      end
+
+      def number(args \\ []) do
+        talos_build_struct(%Talos.Types.NumberType{}, args)
+      end
+
+      def string(args \\ []) do
+        talos_build_struct(%Talos.Types.StringType{}, args)
+      end
+
+      defp talos_build_struct(type, args) do
+        keys = Map.keys(type)
+
+        Enum.reduce(keys, type, fn key, res ->
+          Map.put(res, key, Keyword.get(args, key) || Map.get(type, key))
+        end)
+      end
+    end
   end
 end

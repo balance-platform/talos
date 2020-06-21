@@ -13,6 +13,6 @@ defmodule Talos.Types.FixedTypeTest do
 
   test "errors - returns list with error element" do
     assert [] == FixedType.errors(%FixedType{value: "A"}, "A")
-    assert [_B, _should_be_eq_to_type] = FixedType.errors(%FixedType{value: "A"}, "B")
+    assert [_b, _should_be_eq_to_type] = FixedType.errors(%FixedType{value: "A"}, "B")
   end
 end

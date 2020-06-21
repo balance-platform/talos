@@ -59,9 +59,9 @@ defmodule Talos.Types.MapType do
   end
 
   def errors(%__MODULE__{fields: fields, allow_blank: allow_blank}, map) do
-    if is_map(map) && Map.keys(map) == [] && allow_blank do 
+    if is_map(map) && Map.keys(map) == [] && allow_blank do
       %{}
-    else 
+    else
       case is_map(map) do
         false ->
           [inspect(map), "should be MapType"]
