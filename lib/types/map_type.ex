@@ -46,7 +46,7 @@ defmodule Talos.Types.MapType do
           __struct__: atom,
           allow_nil: boolean,
           allow_blank: boolean,
-          fields: list(Talos.Field.t()) | nil
+          fields: list(Field.t()) | nil
         }
 
   @spec valid?(Talos.Types.MapType.t(), any) :: boolean
