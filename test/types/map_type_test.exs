@@ -1,9 +1,9 @@
 defmodule Talos.Types.MapTypeTest do
   use ExUnit.Case
   alias Talos.Types.MapType
+  alias Talos.Types.MapType.Field
   alias Talos.Types.StringType
   alias Talos.Types.IntegerType
-  alias Talos.Field
   doctest MapType
 
   test "#valid?" do

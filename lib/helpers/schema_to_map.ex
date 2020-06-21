@@ -3,7 +3,7 @@ defmodule Talos.Helpers.SchemaToMap do
   Schema to map, might be usefull for building documentation page
   """
 
-  alias Talos.Field
+  alias Talos.Types.MapType.Field
   alias Talos.Types.MapType
   alias Talos.Types.EnumType
   alias Talos.Types.ListType

@@ -16,10 +16,10 @@ defmodule Talos.Types.MapType do
   ```elixir
 
     iex> alias Talos.Types.MapType
+    iex> alias Talos.Types.MapType.Field
     iex> alias Talos.Types.StringType
     iex> alias Talos.Types.ListType
     iex> alias Talos.Types.IntegerType
-    iex> alias Talos.Field
     iex> any_map = %MapType{}
     iex> Talos.valid?(any_map, %{foo: :bar})
     true
@@ -39,6 +39,8 @@ defmodule Talos.Types.MapType do
   defstruct [:fields, allow_nil: false, allow_blank: false]
 
   @behaviour Talos.Types
+
+  alias Talos.Types.MapType.Field
 
   @type t :: %{
           __struct__: atom,
@@ -66,7 +68,7 @@ defmodule Talos.Types.MapType do
 
         true ->
           (fields || [])
-          |> Enum.map(fn %Talos.Field{} = field ->
+          |> Enum.map(fn %Field{} = field ->
             Talos.errors(field, map)
           end)
           |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)

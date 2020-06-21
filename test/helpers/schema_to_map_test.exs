@@ -4,7 +4,7 @@ defmodule Talos.Helpers.SchemaToMapTest do
   alias Talos.Helpers.SchemaToMap
 
   alias Talos.Types.MapType
-  alias Talos.Field
+  alias Talos.Types.MapType.Field
   alias Talos.Types.FixedType
   alias Talos.Types.StringType
   alias Talos.Types.IntegerType

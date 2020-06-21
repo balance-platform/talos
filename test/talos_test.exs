@@ -2,8 +2,8 @@ defmodule TalosTest do
   use ExUnit.Case
   doctest Talos
 
-  alias Talos.Field
   alias Talos.Types.MapType
+  alias Talos.Types.MapType.Field
   alias Talos.Types.ListType
   alias Talos.Types.EnumType
   alias Talos.Types.NumberType

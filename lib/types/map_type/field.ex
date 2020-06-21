@@ -1,4 +1,4 @@
-defmodule Talos.Field do
+defmodule Talos.Types.MapType.Field do
   @moduledoc false
 
   # Belongs mostly to MapType, and used for key-value pairs
