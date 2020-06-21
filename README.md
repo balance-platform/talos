@@ -9,38 +9,25 @@ Documentation can be found at [ExDoc](https://hexdocs.pm/talos/)
 
 ## Why another one validation library?
 
-I needed more checks than just whether the value belonged to one or another type. And I do not like the existing solutions with DSL, which significantly change the language
+I needed more checks than just whether the value belonged to a particular data type. 
+
+This library allows you to define your own checks and use typical checks with a simple setup.
 
 ## Usage
 
 ```elixir
   defmodule CheckUserJSON do
-    # we define required types and structs
-    alias Talos.Field
-    alias Talos.Types.MapType
-    alias Talos.Types.ListType
-    alias Talos.Types.EnumType
-    alias Talos.Types.NumberType
-    alias Talos.Types.StringType
-    # here we define expected struct
-    @interests_type %EnumType{
-      members: [
-        "sports",
-        "games",
-        "food"
-      ]
-    }
-    # one struct can be nested in another
-    @user_type %MapType{
-      fields: [
-        %Field{key: "email", type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-        %Field{key: "age", type: %NumberType{gteq: 18, allow_nil: true}},
-        %Field{key: "interests", type: %ListType{type: @interests_type}, optional: true}
-      ]
-    }
+    import Talos
 
-    def validate(map_data) do
-      errors = Talos.errors(@user_type, map_data)
+    @interests_type enum(members: ["sports", "games", "food"])
+    @user map(fields: [
+      field(key: "email", type: string(min_length: 5, max_length: 255, regexp: ~r/.*@.*/)),
+      field(key: "age", type: integer(gteq: 18, allow_nil: true)),
+      field(key: "interests", type: list(type: @interests_type), optional: true)
+    ])
+
+    def validate(%{} = map_data) do
+      errors = Talos.errors(@user, map_data)
 
       case errors == %{} do
         true -> :ok
@@ -75,9 +62,10 @@ If you want define own Type, just create module with `Talos.Types` behavior
 ```elixir
 defmodule ZipCodeType do
   @behaviour Talos.Types
+  defstruct [length: 6]
 
-  def valid?(__MODULE__, value) do
-    String.valid?(value) && String.match?(value, ~r/\d{6}/)
+  def valid?(%__MODULE__{length: len}, value) do
+    String.valid?(value) && String.match?(value, ~r/\d{len}/)
   end
 
   def errors(__MODULE__, value) do
@@ -90,9 +78,9 @@ end
 
 # And use it
 
-Talos.valid?(ZipCodeType, "123456") # => true
-Talos.valid?(ZipCodeType, "1234") # => false
-Talos.valid?(ZipCodeType, 123456) # => false
+Talos.valid?(%ZipCodeType{}, "123456") # => true
+Talos.valid?(%ZipCodeType{}, "1234") # => false
+Talos.valid?(%ZipCodeType{}, 123456) # => false
 ```
 
 ## Installation

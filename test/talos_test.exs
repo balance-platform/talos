@@ -52,7 +52,25 @@ defmodule TalosTest do
   end
 
   describe "DSL tests" do
-    use Talos
+    import Talos
+
+    test "Module" do
+      defmodule Foo do
+        import Talos
+
+        @list list(max_length: 2)
+
+        def check(data) do
+          Talos.valid?(@list, data)
+        end
+      end
+
+      assert Foo.check([]) == true
+      assert Foo.check([1]) == true
+      assert Foo.check([1, 2]) == true
+      assert Foo.check([1, 2, 3]) == false
+      assert Foo.check(nil) == false
+    end
 
     test "MapType" do
       assert %MapType{allow_blank: false, allow_nil: false, fields: []} = map(fields: [])
