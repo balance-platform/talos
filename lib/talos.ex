@@ -8,7 +8,7 @@ defmodule Talos do
 
   ```elixir
   defmodule MyAppWeb.UserController do
-    # we define required types and structs
+    # just import talos with functions helpers
     import Talos
 
     @interests_type enum(members: ["sports", "games", "food"]) # <- subtype
@@ -67,6 +67,8 @@ defmodule Talos do
       args
     )
   end
+
+  # Functions Helpers
 
   def enum(args \\ []) do
     talos_build_struct(%Talos.Types.EnumType{}, args)

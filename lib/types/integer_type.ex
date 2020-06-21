@@ -4,8 +4,8 @@ defmodule Talos.Types.IntegerType do
 
   For example:
   ```elixir
-    
-    iex> percents = %Talos.Types.IntegerType{gteq: 0, lteq: 100}
+    iex> import Talos, only: [integer: 1]
+    iex> percents = integer(gteq: 0, lteq: 100)
     iex> Talos.valid?(percents, 42)
     true
     iex> Talos.valid?(percents, -15)

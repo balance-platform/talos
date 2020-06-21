@@ -4,8 +4,8 @@ defmodule Talos.Types.EnumType do
 
   For example:
   ```elixir
-    
-    iex> genders = %Talos.Types.EnumType{members: ["male", "female"]}
+    iex> import Talos
+    iex> genders = enum(members: ["male", "female"])
     iex> Talos.valid?(genders, "male")
     true
     iex> Talos.valid?(genders, "female")

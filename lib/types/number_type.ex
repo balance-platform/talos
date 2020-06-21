@@ -5,7 +5,8 @@ defmodule Talos.Types.NumberType do
   For example:
   ```elixir
 
-    iex> percents = %Talos.Types.NumberType{gteq: 0, lteq: 100}
+    iex> import Talos, only: [number: 1]
+    iex> percents = number(gteq: 0, lteq: 100)
     iex> Talos.valid?(percents, 42)
     true
     iex> Talos.valid?(percents, -15)

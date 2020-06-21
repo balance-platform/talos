@@ -4,8 +4,8 @@ defmodule Talos.Types.FixedType do
 
   For example:
   ```elixir
-    
-    iex> the_4th_planet = %Talos.Types.FixedType{value: "Mars"}
+    iex> import Talos, only: [fixed: 1]
+    iex> the_4th_planet = fixed(value: "Mars")
     iex> Talos.valid?(the_4th_planet, "Earth")
     false
     iex> Talos.valid?(the_4th_planet, "Mars")

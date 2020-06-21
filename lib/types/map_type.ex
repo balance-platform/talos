@@ -15,19 +15,14 @@ defmodule Talos.Types.MapType do
   For example:
   ```elixir
 
-    iex> alias Talos.Types.MapType
-    iex> alias Talos.Types.MapType.Field
-    iex> alias Talos.Types.StringType
-    iex> alias Talos.Types.ListType
-    iex> alias Talos.Types.IntegerType
-    iex> any_map = %MapType{}
-    iex> Talos.valid?(any_map, %{foo: :bar})
+    iex> import Talos
+    iex> Talos.valid?(map(), %{foo: :bar})
     true
-    iex> user_params = %MapType{fields: [
-    ...>  %Field{key: "email", type: %StringType{min_length: 5, max_length: 255, regexp: ~r/.*@.*/}},
-    ...>  %Field{key: "age", type: %IntegerType{gteq: 18, allow_nil: true}},
-    ...>  %Field{key: "interests", type: %ListType{type: %StringType{}}, optional: true}
-    ...> ]}
+    iex> user_params = map(fields: [
+    ...>  field(key: "email", type: string(min_length: 5, max_length: 255, regexp: ~r/.*@.*/)),
+    ...>  field(key: "age", type: integer(gteq: 18, allow_nil: true)),
+    ...>  field(key: "interests", type: list(type: string()), optional: true)
+    ...> ])
     iex> Talos.valid?(user_params, %{})
     false
     iex> Talos.valid?(user_params, %{"email" => "bob@gmail.com", "age" => 30})

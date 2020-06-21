@@ -8,6 +8,7 @@ defmodule Talos.Types do
 
     iex> defmodule EmailType do
     iex>   @behaviour Talos.Types
+    iex>   defstruct [] # Type must be struct, even empty
     iex>   alias Talos.Types.StringType
     iex>   @email_type %StringType{min_length: 5, regexp: ~r/.*@.*/, max_length: 255}
     iex>   def valid?(_email_type, email) do

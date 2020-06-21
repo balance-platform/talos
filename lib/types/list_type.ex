@@ -3,21 +3,20 @@ defmodule Talos.Types.ListType do
     ListType is used to check passed value is a list
 
   ```elixir
-    iex> alias Talos.Types.ListType
-    iex> alias Talos.Types.IntegerType
-    iex> Talos.valid?(%ListType{allow_blank: true}, [])
+    iex> import Talos
+    iex> Talos.valid?(list(allow_blank: true), [])
     true
-    iex> Talos.valid?(%ListType{allow_nil: true}, nil)
+    iex> Talos.valid?(list(allow_nil: true), nil)
     true
-    iex> Talos.valid?(%ListType{}, nil)
+    iex> Talos.valid?(list(), nil)
     false
-    iex> Talos.valid?(%ListType{}, ["one", two, 3, %{}])
+    iex> Talos.valid?(list(), ["one", two, 3, %{}])
     true
-    iex> Talos.valid?(%ListType{type: %IntegerType{}}, ["one", two, 3, %{}])
+    iex> Talos.valid?(list(type: integer()), ["one", two, 3, %{}])
     false
-    iex> Talos.valid?(%ListType{type: %IntegerType{}}, [1,2,3])
+    iex> Talos.valid?(list(type: integer()), [1,2,3])
     true
-    iex> Talos.valid?(%ListType{type: %IntegerType{allow_nil: true}}, [nil,2,3])
+    iex> Talos.valid?(list(type: integer(allow_nil: true)), [nil,2,3])
     true
 
   ```

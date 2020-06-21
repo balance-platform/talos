@@ -4,8 +4,8 @@ defmodule Talos.Types.FloatType do
 
   For example:
   ```elixir
-
-    iex> percents = %Talos.Types.FloatType{gteq: 0, lteq: 100}
+    iex> import Talos, only: [float: 1]
+    iex> percents = float(gteq: 0, lteq: 100)
     iex> Talos.valid?(percents, 42.0)
     true
     iex>Talos.valid?(percents, 136.0)

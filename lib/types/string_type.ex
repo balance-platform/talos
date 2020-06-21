@@ -4,8 +4,8 @@ defmodule Talos.Types.StringType do
 
   For example:
   ```elixir
-    
-    iex> short_domain = %Talos.Types.StringType{length: 3}
+    iex> import Talos, only: [string: 1]
+    iex> short_domain = string(length: 3)
     iex> domains_list = ["cats", "foo", "baz", "pron"]
     iex> Enum.filter(domains_list, fn str -> Talos.valid?(short_domain, str) end)
     ["foo", "baz"]
