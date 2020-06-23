@@ -36,6 +36,7 @@ defmodule Talos.Types.MapType do
   @behaviour Talos.Types
 
   alias Talos.Types.MapType.Field
+  alias Talos.Field, as: DeprecatedField
 
   @type t :: %{
           __struct__: atom,
@@ -63,12 +64,17 @@ defmodule Talos.Types.MapType do
 
         true ->
           (fields || [])
-          |> Enum.map(fn %Field{} = field ->
-            Talos.errors(field, map)
-          end)
+          |> Enum.map(fn field -> field_errors(field, map) end)
           |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
           |> Map.new()
       end
     end
+  end
+
+  defp field_errors(%Field{} = field, map) do
+    Talos.errors(field, map)
+  end
+  defp field_errors(%DeprecatedField{} = field, map) do
+    Talos.errors(field, map)
   end
 end
