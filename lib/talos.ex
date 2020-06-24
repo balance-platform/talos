@@ -74,6 +74,10 @@ defmodule Talos do
     talos_build_struct(%Talos.Types.EnumType{}, args)
   end
 
+  def boolean(args \\ []) do
+    talos_build_struct(%Talos.Types.BooleanType{}, args)
+  end
+
   def fixed(args \\ []) do
     talos_build_struct(%Talos.Types.FixedType{}, args)
   end
