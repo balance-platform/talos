@@ -2,7 +2,7 @@ defmodule Talos.Field do
   @moduledoc false
 
   # Belongs mostly to MapType, and used for key-value pairs
-  @deprecated "Module deprecated, use import Talos instead, will be removed in 1.7"
+  @deprecated "Module deprecated, use import Talos instead, will be removed in 1.8"
   @enforce_keys [:key, :type]
   defstruct [:key, :type, :description, :default_value, example_value: nil, optional: false]
 
