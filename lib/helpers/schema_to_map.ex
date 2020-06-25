@@ -4,6 +4,7 @@ defmodule Talos.Helpers.SchemaToMap do
   """
 
   alias Talos.Types.MapType.Field
+  alias Talos.Field, as: OldField
   alias Talos.Types.MapType
   alias Talos.Types.EnumType
   alias Talos.Types.ListType
@@ -37,11 +38,23 @@ defmodule Talos.Helpers.SchemaToMap do
     }
   end
 
+  def convert(%OldField{} = field) do
+    %{
+      key: field.key,
+      description: field.description,
+      optional: field.optional,
+      default_value: field.default_value,
+      type_name: inspect(field.type.__struct__),
+      type: convert(field.type)
+    }
+  end
+
+  def convert(%{__struct__: _struct} = other) when is_map(other) do
+    struct_to_map(other)
+  end
+
   def convert(other) when is_map(other) do
-    case is_nil(other.__struct__) do
-      true -> other
-      false -> struct_to_map(other)
-    end
+    other
   end
 
   def convert(other) do
@@ -52,15 +65,17 @@ defmodule Talos.Helpers.SchemaToMap do
     keys = Map.keys(struct)
 
     tuples =
-      Enum.map(keys, fn key ->
+      keys
+      |> Enum.map(fn key ->
         value = Map.get(struct, key)
 
         cond do
-          :__struct__ == key -> {:type_name, inspect(value)}
+          :__struct__ == key -> nil
           :regexp == key && !is_nil(value) -> {key, inspect(value)}
           true -> {key, value}
         end
       end)
+      |> Enum.reject(&is_nil/1)
 
     map = Map.new(tuples)
 
