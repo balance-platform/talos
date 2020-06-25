@@ -55,9 +55,10 @@ defmodule Talos.Helpers.SchemaToMap do
       Enum.map(keys, fn key ->
         value = Map.get(struct, key)
 
-        case :__struct__ == key do
-          true -> {:type_name, inspect(value)}
-          false -> {key, value}
+        cond do
+          :__struct__ == key -> {:type_name, inspect(value)}
+          :regexp == key && !is_nil(value) -> {key, inspect(value)}
+          true -> {key, value}
         end
       end)
 

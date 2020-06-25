@@ -25,6 +25,12 @@ defmodule Talos.Helpers.SchemaToMapTest do
         optional: true
       },
       %Field{
+        key: "email",
+        type: %StringType{regexp: ~r/.*@.*/, example_value: "d.shpagin@gmail.com"},
+        description: "user email",
+        optional: true
+      },
+      %Field{
         key: "params",
         type: %MapType{
           fields: [
@@ -106,6 +112,23 @@ defmodule Talos.Helpers.SchemaToMapTest do
                    regexp: nil,
                    type_name: Talos.Types.StringType
                  }
+               },
+               %{
+                 default_value: nil,
+                 description: "user email",
+                 key: "email",
+                 optional: true,
+                 type: %{
+                   allow_blank: false,
+                   allow_nil: false,
+                   example_value: "d.shpagin@gmail.com",
+                   length: nil,
+                   max_length: nil,
+                   min_length: nil,
+                   regexp: "~r/.*@.*/",
+                   type_name: Talos.Types.StringType
+                 },
+                 type_name: "Talos.Types.StringType"
                },
                %{
                  default_value: nil,

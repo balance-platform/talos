@@ -74,6 +74,7 @@ defmodule Talos.Types.MapType do
   defp field_errors(%Field{} = field, map) do
     Talos.errors(field, map)
   end
+
   defp field_errors(%DeprecatedField{} = field, map) do
     Talos.errors(field, map)
   end
