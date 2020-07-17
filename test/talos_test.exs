@@ -8,6 +8,7 @@ defmodule TalosTest do
   alias Talos.Types.EnumType
   alias Talos.Types.NumberType
   alias Talos.Types.StringType
+  import Talos
 
   @interests_type %EnumType{
     members: [
@@ -132,6 +133,49 @@ defmodule TalosTest do
         )
 
       assert dsl_schema == @request_type
+    end
+  end
+
+  describe "Permit structs" do
+    test "#permit" do
+      element =
+        map(
+          allow_nil: true,
+          fields: [
+            field(key: "name", type: string()),
+            field(key: "loved_digits", type: list(), optional: true)
+          ]
+        )
+
+      schema =
+        map(
+          fields: [
+            field(key: "action", type: string()),
+            field(key: "list", type: list(type: element)),
+            field(key: "list_allows_nil", type: list(type: element))
+          ]
+        )
+
+      assert %{
+               "action" => "choose_girlfriend",
+               "list" => [%{"name" => "Janna"}, %{"name" => "Eliza"}],
+               "list_allows_nil" => [nil, %{"name" => "Oscar", "loved_digits" => [1, 2, 3, 4, 5]}]
+             } = result =
+               Talos.permit(schema, %{
+                 "action" => "choose_girlfriend",
+                 "target" => "Some Lonely man",
+                 "list" => [
+                   %{"name" => "Janna", "age" => 13},
+                   %{"name" => "Eliza", "has_rich_daddy" => true}
+                 ],
+                 "list_allows_nil" => [
+                   nil,
+                   %{"name" => "Oscar", "loved_digits" => [1, 2, 3, 4, 5]}
+                 ]
+               })
+
+      assert Talos.errors(schema, result) == %{}
+      assert Talos.valid?(schema, result) == true
     end
   end
 end
