@@ -86,6 +86,17 @@ defmodule Talos.Types.ListType do
     end
   end
 
+  def permit(%__MODULE__{allow_nil: true}, nil) do
+    nil
+  end
+
+  def permit(%__MODULE__{type: type}, list) do
+    case is_nil(type) do
+      true -> list
+      false -> Enum.map(list, fn el -> Talos.permit(type, el) end)
+    end
+  end
+
   defp return_only_errors(element_type, values) do
     values
     |> Enum.map(fn val -> element_errors(element_type, val) end)

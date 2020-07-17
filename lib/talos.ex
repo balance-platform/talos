@@ -1,4 +1,8 @@
 defmodule Talos do
+  alias Talos.Types.MapType
+  alias Talos.Types.MapType.Field
+  alias Talos.Types.ListType
+
   @moduledoc """
   Documentation for Talos.
 
@@ -45,6 +49,19 @@ defmodule Talos do
     module.valid?(module, value)
   end
 
+  @spec permit(struct | module, any) :: boolean
+  def permit(%{__struct__: type_module} = data_type, data) do
+    case type_module do
+      MapType -> MapType.permit(data_type, data)
+      ListType -> ListType.permit(data_type, data)
+      _another -> data
+    end
+  end
+
+  def permit(_module, value) do
+    value
+  end
+
   @spec errors(struct | module, any) :: any
   def errors(%{__struct__: type_module} = data_type, data) do
     type_module.errors(data_type, data)
@@ -55,12 +72,12 @@ defmodule Talos do
   end
 
   def map(args \\ []) do
-    talos_build_struct(%Talos.Types.MapType{}, args)
+    talos_build_struct(%MapType{}, args)
   end
 
   def field(args \\ []) do
     talos_build_struct(
-      %Talos.Types.MapType.Field{
+      %Field{
         key: Keyword.get(args, :key),
         type: Keyword.get(args, :key)
       },

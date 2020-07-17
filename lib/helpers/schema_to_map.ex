@@ -4,7 +4,6 @@ defmodule Talos.Helpers.SchemaToMap do
   """
 
   alias Talos.Types.MapType.Field
-  alias Talos.Field, as: OldField
   alias Talos.Types.MapType
   alias Talos.Types.EnumType
   alias Talos.Types.ListType
@@ -28,17 +27,6 @@ defmodule Talos.Helpers.SchemaToMap do
   end
 
   def convert(%Field{} = field) do
-    %{
-      key: field.key,
-      description: field.description,
-      optional: field.optional,
-      default_value: field.default_value,
-      type_name: inspect(field.type.__struct__),
-      type: convert(field.type)
-    }
-  end
-
-  def convert(%OldField{} = field) do
     %{
       key: field.key,
       description: field.description,
