@@ -2,6 +2,7 @@ defmodule Talos.Types.ListTypeTest do
   use ExUnit.Case
   alias Talos.Types.ListType
   alias Talos.Types.NumberType
+  import Talos
 
   test "#valid?" do
     assert true == ListType.valid?(%ListType{allow_nil: true}, nil)
@@ -26,6 +27,13 @@ defmodule Talos.Types.ListTypeTest do
 
   test "#valid? with allow_blank" do
     assert true == ListType.valid?(%ListType{allow_blank: true}, [])
+  end
+
+  test "#valid? with enum subtype" do
+    assert true == ListType.valid?(list(type: enum(members: ["a", "b", "c"])), ["a", "b", "c"])
+    assert true == ListType.valid?(list(type: enum(members: ["a", "b", "c"])), ["a", "b"])
+    assert true == ListType.valid?(list(type: enum(members: ["a", "b", "c"])), ["a"])
+    assert false == ListType.valid?(list(type: enum(members: ["a", "b", "c"])), ["a", "f"])
   end
 
   test "#valid? - with additional params" do
