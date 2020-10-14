@@ -24,7 +24,7 @@ defmodule Talos.Types.ListTypeTest do
     assert false == ListType.valid?(%ListType{}, "string")
   end
 
-  test "#valid? with allow_blank" do
+  test "#valid? - with allow_blank" do
     assert true == ListType.valid?(%ListType{allow_blank: true}, [])
   end
 
@@ -39,6 +39,19 @@ defmodule Talos.Types.ListTypeTest do
     assert false == ListType.valid?(%ListType{type: number_type}, 1)
     assert false == ListType.valid?(%ListType{type: number_type}, [-1000, 1, 2])
     assert false == ListType.valid?(%ListType{type: number_type}, ["string"])
+  end
+
+  test "#valid? - allow members" do
+    assert true == ListType.valid?(%ListType{allow_members: [0, 2, 5]}, [0, 2, 5, 5])
+    assert false == ListType.valid?(%ListType{allow_members: [0, 2, 5]}, [nil, 2, 6])
+
+    assert [
+             ["nil", "disallowed item"],
+             ["6", "disallowed item"]
+           ] == ListType.errors(%ListType{allow_members: [0, 2, 5]}, [nil, 2, 6])
+
+    assert [["\"two\"", "disallowed item"]] ==
+             ListType.errors(%ListType{allow_members: ["one", "three"]}, ["one", "two", "three"])
   end
 
   test "#errors - returns errors or empty list" do

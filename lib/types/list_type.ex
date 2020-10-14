@@ -18,6 +18,8 @@ defmodule Talos.Types.ListType do
     true
     iex> Talos.valid?(list(type: integer(allow_nil: true)), [nil,2,3])
     true
+    iex> Talos.valid?(list(type: integer(allow_nil: true), allow_members[nil,2,3]), [nil,2,3])
+    true
 
   ```
 
@@ -36,7 +38,8 @@ defmodule Talos.Types.ListType do
     allow_blank: false,
     example_value: nil,
     min_length: nil,
-    max_length: nil
+    max_length: nil,
+    allow_members: nil
   ]
 
   @behaviour Talos.Types
@@ -45,7 +48,8 @@ defmodule Talos.Types.ListType do
           type: struct | module | nil,
           allow_blank: boolean,
           allow_nil: boolean,
-          example_value: any
+          example_value: any,
+          allow_members: list() | nil
         }
   @spec valid?(Talos.Types.ListType.t(), any) :: boolean
   def valid?(module, value) do
@@ -59,6 +63,12 @@ defmodule Talos.Types.ListType do
 
   def errors(%__MODULE__{allow_nil: true}, nil) do
     []
+  end
+
+  def errors(%__MODULE__{allow_members: members}, list) when is_list(members) do
+    list
+    |> Enum.reject(&(&1 in members))
+    |> Enum.map(&([inspect(&1), "disallowed item"]))
   end
 
   def errors(
