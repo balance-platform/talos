@@ -1,6 +1,7 @@
 defmodule Talos.Types.EnumType do
   alias Talos.Types.MapType
   alias Talos.Types.ListType
+
   @moduledoc ~S"""
   Enum type is used to check value to be one of enumerable
 
@@ -82,9 +83,11 @@ defmodule Talos.Types.EnumType do
 
   @spec permit(Talos.Types.EnumType.t(), any) :: any
   def permit(%__MODULE__{members: members}, value) do
-    member = Enum.find(members || [], fn member -> 
-      is_map(member) && Map.get(member, :__struct__) in [MapType, ListType] && Talos.valid?(member, value) 
-    end)
+    member =
+      Enum.find(members || [], fn member ->
+        is_map(member) && Map.get(member, :__struct__) in [MapType, ListType] &&
+          Talos.valid?(member, value)
+      end)
 
     case is_nil(member) do
       true -> value

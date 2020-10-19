@@ -73,13 +73,15 @@ defmodule Talos.Types.EnumTypeTest do
     assert nil == EnumType.permit(%EnumType{allow_nil: true}, nil)
     assert nil == EnumType.permit(%EnumType{allow_nil: false}, nil)
     assert nil == EnumType.permit(%EnumType{members: [1, 2, 3, 4]}, nil)
-    
 
-    schema = enum(members: [
-      map(fields: [field(key: "a", type: integer())]),
-      map(fields: [field(key: "b", type: integer())])
-    ])
-    
+    schema =
+      enum(
+        members: [
+          map(fields: [field(key: "a", type: integer())]),
+          map(fields: [field(key: "b", type: integer())])
+        ]
+      )
+
     assert %{"c" => 3} == EnumType.permit(schema, %{"c" => 3})
     assert %{"a" => 1} == EnumType.permit(schema, %{"a" => 1, "c" => 4})
     assert %{"b" => 2} == EnumType.permit(schema, %{"b" => 2, "f" => 4})

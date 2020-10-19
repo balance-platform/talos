@@ -160,7 +160,8 @@ defmodule TalosTest do
                "action" => "choose_girlfriend",
                "list" => [%{"name" => "Janna"}, %{"name" => "Eliza"}],
                "list_allows_nil" => [nil, %{"name" => "Oscar", "loved_digits" => [1, 2, 3, 4, 5]}]
-             } = result =
+             } =
+               result =
                Talos.permit(schema, %{
                  "action" => "choose_girlfriend",
                  "target" => "Some Lonely man",

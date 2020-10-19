@@ -16,7 +16,7 @@ defmodule Talos do
     import Talos
 
     @interests_type enum(members: ["sports", "games", "food"]) # <- subtype
-    # here we define expected struct 
+    # here we define expected struct
     @user_type map(fields: [
       field(key: "email", type: string(min_length: 5, max_length: 255, regexp: ~r/.*@.*/)),
       field(key: "age", type: integer(gteq: 18, allow_nil: true)),
@@ -87,35 +87,43 @@ defmodule Talos do
 
   # Functions Helpers
 
-  def enum(args \\ []) do
+  def enum(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.EnumType{}, args)
   end
 
-  def boolean(args \\ []) do
+  def boolean(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.BooleanType{}, args)
   end
 
-  def fixed(args \\ []) do
+  def fixed(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.FixedType{}, args)
   end
 
-  def float(args \\ []) do
+  def float(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.FloatType{}, args)
   end
 
-  def integer(args \\ []) do
+  def integer(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.IntegerType{}, args)
   end
 
-  def list(args \\ []) do
+  def list(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.ListType{}, args)
   end
 
-  def number(args \\ []) do
+  def number(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.NumberType{}, args)
   end
 
-  def string(args \\ []) do
+  def string(args \\ []) when is_list(args) do
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.StringType{}, args)
   end
 
