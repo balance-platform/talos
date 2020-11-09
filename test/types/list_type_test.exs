@@ -6,7 +6,8 @@ defmodule Talos.Types.ListTypeTest do
 
   test "#valid?" do
     assert true == ListType.valid?(%ListType{allow_nil: true}, nil)
-    assert true == ListType.valid?(%ListType{}, [])
+    assert false == ListType.valid?(%ListType{}, [])
+    assert true == ListType.valid?(%ListType{allow_blank: true}, [])
     assert true == ListType.valid?(%ListType{}, [1])
     assert true == ListType.valid?(%ListType{}, [1, 2, "string"])
     assert true == ListType.valid?(%ListType{allow_nil: true}, [1, 2, "string"])
@@ -39,7 +40,10 @@ defmodule Talos.Types.ListTypeTest do
   test "#valid? - with additional params" do
     number_type = %NumberType{gteq: 0}
 
-    assert true == ListType.valid?(%ListType{type: number_type}, [])
+    assert false == ListType.valid?(%ListType{type: number_type}, [])
+    assert false == ListType.valid?(%ListType{type: number_type, allow_nil: true}, [])
+    assert true == ListType.valid?(%ListType{type: number_type, allow_blank: true}, [])
+    assert true == ListType.valid?(%ListType{type: number_type, allow_blank: true, allow_nil: true}, [])
     assert true == ListType.valid?(%ListType{type: number_type}, [1])
     assert true == ListType.valid?(%ListType{type: number_type}, [0, 1, 2])
 
@@ -52,7 +56,8 @@ defmodule Talos.Types.ListTypeTest do
   test "#errors - returns errors or empty list" do
     number_type = %NumberType{gteq: 0}
 
-    assert [] == ListType.errors(%ListType{type: number_type}, [])
+    assert ["list should not be empty"] == ListType.errors(%ListType{type: number_type}, [])
+    assert [] == ListType.errors(%ListType{type: number_type, allow_blank: true}, [])
 
     assert ["1", "should be ListType"] = ListType.errors(%ListType{type: number_type}, 1)
 

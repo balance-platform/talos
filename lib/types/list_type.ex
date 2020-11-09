@@ -53,13 +53,10 @@ defmodule Talos.Types.ListType do
   end
 
   @spec errors(Talos.Types.ListType.t(), any) :: list(String.t())
-  def errors(%__MODULE__{allow_blank: true}, []) do
-    []
-  end
-
-  def errors(%__MODULE__{allow_nil: true}, nil) do
-    []
-  end
+  def errors(%__MODULE__{allow_blank: true}, []), do: []
+  def errors(%__MODULE__{allow_blank: false}, []), do: ["list should not be empty"]
+  def errors(%__MODULE__{allow_nil: true}, nil), do: []
+  def errors(%__MODULE__{allow_nil: false}, nil), do: ["list should be set"]
 
   def errors(
         %__MODULE__{type: element_type, min_length: min_len, max_length: max_len} = _array_type,

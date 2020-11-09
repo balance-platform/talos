@@ -66,7 +66,7 @@ defmodule TalosTest do
         end
       end
 
-      assert Foo.check([]) == true
+      assert Foo.check([]) == false
       assert Foo.check([1]) == true
       assert Foo.check([1, 2]) == true
       assert Foo.check([1, 2, 3]) == false
