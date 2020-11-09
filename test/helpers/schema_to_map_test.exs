@@ -170,7 +170,7 @@ defmodule Talos.Helpers.SchemaToMapTest do
                              optional: false,
                              type_name: "Talos.Types.ListType",
                              type: %{
-                               allow_blank: false,
+                               allow_blank: true,
                                allow_nil: false,
                                min_length: nil,
                                max_length: nil,

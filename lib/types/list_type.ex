@@ -33,7 +33,7 @@ defmodule Talos.Types.ListType do
   defstruct [
     :type,
     allow_nil: false,
-    allow_blank: false,
+    allow_blank: true,
     example_value: nil,
     min_length: nil,
     max_length: nil
