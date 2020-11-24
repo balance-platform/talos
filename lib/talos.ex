@@ -71,6 +71,8 @@ defmodule Talos do
     module.errors(module, value)
   end
 
+  # Functions Helpers
+
   def map(args \\ []) do
     talos_build_struct(%MapType{}, args)
   end
@@ -85,53 +87,51 @@ defmodule Talos do
     )
   end
 
-  # Functions Helpers
-
   def enum(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.EnumType{}, args)
   end
 
   def boolean(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.BooleanType{}, args)
   end
 
   def fixed(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.FixedType{}, args)
   end
 
   def float(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.FloatType{}, args)
   end
 
   def integer(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.IntegerType{}, args)
   end
 
   def list(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.ListType{}, args)
   end
 
   def number(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.NumberType{}, args)
   end
 
   def string(args \\ []) when is_list(args) do
-    if !Keyword.keyword?(args), do: raise(ArgumentError)
     talos_build_struct(%Talos.Types.StringType{}, args)
   end
 
   defp talos_build_struct(type, args) do
-    keys = Map.keys(type)
+    if !Keyword.keyword?(args), do: raise(ArgumentError)
 
-    Enum.reduce(keys, type, fn key, res ->
-      Map.put(res, key, Keyword.get(args, key) || Map.get(type, key))
+    type
+    |> Map.keys()
+    |> Enum.reduce(type, fn key, res ->
+      value =
+        case Keyword.get(args, key) do
+          nil -> Map.get(type, key)
+          v -> v
+        end
+
+      Map.put(res, key, value)
     end)
   end
 end

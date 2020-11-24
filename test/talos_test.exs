@@ -83,7 +83,7 @@ defmodule TalosTest do
       assert %MapType{allow_blank: true, allow_nil: true, fields: nil} =
                map(allow_nil: true, allow_blank: true)
 
-      # With Feilds
+      # With Fields
       assert %MapType{
                allow_blank: false,
                allow_nil: false,
@@ -99,6 +99,16 @@ defmodule TalosTest do
     test "StringType" do
       assert %StringType{} = string()
       assert %StringType{max_length: 3} = string(max_length: 3)
+    end
+
+    test "ListType" do
+      assert %ListType{
+               allow_blank: false,
+               allow_nil: false,
+               example_value: nil,
+               max_length: nil,
+               min_length: nil
+             } = list(allow_blank: false)
     end
 
     test "Nested" do
