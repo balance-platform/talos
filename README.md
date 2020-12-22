@@ -4,7 +4,7 @@
 [![hex.pm](https://img.shields.io/hexpm/v/talos.svg)](https://hex.pm/packages/talos)
 [![hex.pm](https://img.shields.io/hexpm/dt/talos.svg)](https://hex.pm/packages/talos)
 [![hex.pm](https://img.shields.io/hexpm/l/talos.svg)](https://hex.pm/packages/talos)
-[![github.com](https://img.shields.io/github/last-commit/CatTheMagician/talos.svg)](https://github.com/CatTheMagician/talos/commits/master)
+[![github.com](https://img.shields.io/github/last-commit/balance-platform/talos.svg)](https://github.com/balance-platform/talos/commits/master)
 
 Talos is simple parameters validation library
 

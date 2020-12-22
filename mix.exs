@@ -4,7 +4,7 @@ defmodule Talos.MixProject do
   def project do
     [
       app: :talos,
-      version: "1.9.2",
+      version: "1.9.3",
       elixir: ">= 1.8.0",
       build_embedded: Mix.env() == :prod,
       start_permanent: Mix.env() == :prod,
@@ -12,7 +12,7 @@ defmodule Talos.MixProject do
       package: package(),
       test_coverage: [tool: ExCoveralls],
       deps: deps(),
-      source_url: "https://github.com/CatTheMagician/talos",
+      source_url: "https://github.com/balance-platform/talos",
       test_coverage: [tool: ExCoveralls],
       preferred_cli_env: [
         coveralls: :test,
@@ -25,8 +25,8 @@ defmodule Talos.MixProject do
       ],
       # Docs
       name: "Talos",
-      source_url: "https://github.com/CatTheMagician/talos",
-      homepage_url: "https://github.com/CatTheMagician/talos",
+      source_url: "https://github.com/balance-platform/talos",
+      homepage_url: "https://github.com/balance-platform/talos",
       docs: [
         main: "Talos",
         extras: ["README.md"]
@@ -63,7 +63,7 @@ defmodule Talos.MixProject do
       # These are the default files included in the package
       files: ~w(lib .formatter.exs mix.exs README* CHANGELOG*),
       licenses: ["MIT"],
-      links: %{"GitHub" => "https://github.com/CatTheMagician/talos"}
+      links: %{"GitHub" => "https://github.com/balance-platform/talos"}
     ]
   end
 end
