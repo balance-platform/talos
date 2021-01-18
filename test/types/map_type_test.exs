@@ -112,17 +112,160 @@ defmodule Talos.Types.MapTypeTest do
     assert %{} == MapType.errors(schema, %{"age" => nil, "name" => "Dmitry"})
   end
 
-  test "#errors - with required one of many fields" do
+  test "@errors - depends_on, fio + birthdate" do
     schema =
       map(
         fields: [
-          field(key: "name", type: string(), if_any: true),
-          field(key: "age", type: integer(gteq: 18), if_any: true)
+          field(
+            key: "lastname",
+            type: string(),
+            depends_on: ["birthdate", "firstname", "middlename"]
+          ),
+          field(
+            key: "firstname",
+            type: string(),
+            depends_on: ["birthdate", "lastname", "middlename"]
+          ),
+          field(
+            key: "middlename",
+            type: string(),
+            depends_on: ["birthdate", "lastname", "firstname"]
+          ),
+          field(
+            key: "birthdate",
+            type: string(),
+            depends_on: ["lastname", "firstname", "middlename"]
+          )
         ]
       )
 
-    assert %{"age" => ["one of keys should exist"], "name" => ["one of keys should exist"]} =
-             MapType.errors(schema, %{})
+    assert %{
+             "firstname" => ["should exist"],
+             "lastname" => ["should exist"],
+             "birthdate" => ["should exist"],
+             "middlename" => ["should exist"]
+           } = MapType.errors(schema, %{})
+
+    assert %{
+             "firstname" => ["should exist"],
+             "lastname" => ["should exist"],
+             "middlename" => ["should exist"],
+             "birthdate" => ["all dependens_on fields should exist"]
+           } == MapType.errors(schema, %{"birthdate" => "1991-12-23"})
+
+    assert %{
+             "birthdate" => ["should exist"],
+             "firstname" => ["all dependens_on fields should exist"],
+             "lastname" => ["all dependens_on fields should exist"],
+             "middlename" => ["should exist"]
+           } ==
+             MapType.errors(schema, %{
+               "lastname" => "Минаев",
+               "firstname" => "Константин"
+             })
+
+    assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
+             MapType.errors(schema, %{
+               "lastname" => "",
+               "firstname" => nil,
+               "middlename" => "Геннадьевич",
+               "birthdate" => "1991-12-23"
+             })
+
+    assert %{} ==
+             MapType.errors(schema, %{
+               "lastname" => "Минаев",
+               "firstname" => "Константин",
+               "middlename" => "Геннадьевич",
+               "birthdate" => "1991-12-23"
+             })
+  end
+
+  test "@errors - depends_on, fio + birthdate with optional middlename" do
+    schema =
+      map(
+        fields: [
+          field(
+            key: "lastname",
+            type: string(),
+            depends_on: ["birthdate", "firstname"]
+          ),
+          field(
+            key: "firstname",
+            type: string(),
+            depends_on: ["birthdate", "lastname"]
+          ),
+          field(
+            key: "middlename",
+            type: string(),
+            optional: true,
+            depends_on: ["birthdate", "lastname", "firstname"]
+          ),
+          field(
+            key: "birthdate",
+            type: string(),
+            depends_on: ["lastname", "firstname"]
+          )
+        ]
+      )
+
+    assert %{
+             "firstname" => ["should exist"],
+             "lastname" => ["should exist"],
+             "birthdate" => ["should exist"]
+           } = MapType.errors(schema, %{})
+
+    assert %{
+             "firstname" => ["should exist"],
+             "lastname" => ["should exist"],
+             "birthdate" => ["all dependens_on fields should exist"]
+           } == MapType.errors(schema, %{"birthdate" => "1991-12-23"})
+
+    assert %{
+             "birthdate" => ["should exist"],
+             "firstname" => ["all dependens_on fields should exist"],
+             "lastname" => ["all dependens_on fields should exist"]
+           } ==
+             MapType.errors(schema, %{
+               "lastname" => "Минаев",
+               "firstname" => "Константин"
+             })
+
+    assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
+             MapType.errors(schema, %{
+               "lastname" => "",
+               "firstname" => nil,
+               "middlename" => "Геннадьевич",
+               "birthdate" => "1991-12-23"
+             })
+
+    assert %{} ==
+             MapType.errors(schema, %{
+               "lastname" => "Минаев",
+               "firstname" => "Константин",
+               "middlename" => "Геннадьевич",
+               "birthdate" => "1991-12-23"
+             })
+
+    assert %{} ==
+             MapType.errors(schema, %{
+               "lastname" => "Минаев",
+               "firstname" => "Константин",
+               "birthdate" => "1991-12-23"
+             })
+  end
+
+  test "#errors - with required one of many fields" do
+    schema =
+      map(
+        required_any_one: true,
+        fields: [
+          field(key: "name", type: string()),
+          field(key: "age", type: integer(gteq: 18))
+        ]
+      )
+
+    assert ["one of keys should exist"] = MapType.errors(schema, %{})
 
     assert %{
              "name" => _error_message
@@ -136,11 +279,14 @@ defmodule Talos.Types.MapTypeTest do
 
     assert %{
              "name" => ["nil", "should be StringType"],
-             "age" => ["nil", "should be integer type"]
+             "age" => ["should exist"]
            } == MapType.errors(schema, %{"name" => nil})
+
+    assert %{"name" => ["nil", "should be StringType"]} ==
+             MapType.errors(schema, %{"name" => nil, "age" => 21})
 
     assert %{} == MapType.errors(schema, %{"age" => 18, "name" => "Dmitry"})
     assert %{} == MapType.errors(schema, %{"name" => "Dmitry"})
-    assert %{} == MapType.errors(schema, %{"name" => nil, "age" => 21})
+    assert %{} == MapType.errors(schema, %{"age" => 88})
   end
 end

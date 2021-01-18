@@ -5,11 +5,11 @@ defmodule Talos.Types.MapType do
   Fields are tuples `{key, type, options \\ []}`:
 
     `key` - string or atom, key of map
-    
+
     `type` - Talos defined Type
-    
-    `options`: 
-    
+
+    `options`:
+
       * `optional`: true/false, if false - there will be error on key missing
 
   For example:
@@ -31,7 +31,7 @@ defmodule Talos.Types.MapType do
     true
   """
 
-  defstruct [:fields, allow_nil: false, allow_blank: false]
+  defstruct [:fields, allow_nil: false, allow_blank: false, required_any_one: false]
 
   @behaviour Talos.Types
 
@@ -41,6 +41,7 @@ defmodule Talos.Types.MapType do
           __struct__: atom,
           allow_nil: boolean,
           allow_blank: boolean,
+          required_any_one: boolean(),
           fields: list(Field.t()) | nil
         }
 
@@ -51,6 +52,28 @@ defmodule Talos.Types.MapType do
 
   def errors(%__MODULE__{allow_nil: true}, nil) do
     %{}
+  end
+
+  def errors(%__MODULE__{fields: _fields}, map) when not is_map(map) do
+    [inspect(map), "should be MapType"]
+  end
+
+  def errors(%__MODULE__{fields: fields, required_any_one: true}, map) do
+    has_values = Enum.all?(map, fn {_k, value} -> !is_nil(value) end)
+
+    cond do
+      Enum.empty?(Map.keys(map)) ->
+        ["one of keys should exist"]
+
+      has_values ->
+        %{}
+
+      true ->
+        (fields || [])
+        |> Enum.map(fn field -> field_errors(field, map) end)
+        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+        |> Map.new()
+    end
   end
 
   def errors(%__MODULE__{fields: fields, allow_blank: allow_blank}, map) do

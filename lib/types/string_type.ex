@@ -56,6 +56,10 @@ defmodule Talos.Types.StringType do
     []
   end
 
+  def errors(%__MODULE__{allow_blank: false}, "") do
+    ["can not be blank"]
+  end
+
   def errors(%__MODULE__{allow_nil: true}, nil) do
     []
   end

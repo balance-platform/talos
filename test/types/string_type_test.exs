@@ -17,6 +17,7 @@ defmodule Talos.Types.StringTypeTest do
 
   test "#valid? with allow_blank" do
     assert true == StringType.valid?(%StringType{allow_blank: true, min_length: 30}, "")
+    assert false == StringType.valid?(%StringType{}, "")
   end
 
   test "#valid? - without regexp" do
@@ -36,7 +37,7 @@ defmodule Talos.Types.StringTypeTest do
     assert false == StringType.valid?(%StringType{max_length: 3}, "String")
     assert true == StringType.valid?(%StringType{min_length: 3}, "String")
     assert false == StringType.valid?(%StringType{min_length: 3}, "")
-    assert true == StringType.valid?(%StringType{min_length: 0}, "")
+    assert true == StringType.valid?(%StringType{min_length: 0, allow_blank: true}, "")
   end
 
   test "#errors - other params" do
@@ -50,7 +51,7 @@ defmodule Talos.Types.StringTypeTest do
              StringType.errors(%StringType{max_length: 3}, "String")
 
     assert [] == StringType.errors(%StringType{min_length: 3}, "String")
-    assert ["\"\"", _error_message] = StringType.errors(%StringType{min_length: 3}, "")
-    assert [] == StringType.errors(%StringType{min_length: 0}, "")
+    assert ["can not be blank"] = StringType.errors(%StringType{min_length: 3}, "")
+    assert [] == StringType.errors(%StringType{min_length: 0, allow_blank: true}, "")
   end
 end
