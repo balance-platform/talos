@@ -111,4 +111,36 @@ defmodule Talos.Types.MapTypeTest do
     assert %{} == MapType.errors(schema, %{"age" => nil, "name" => nil})
     assert %{} == MapType.errors(schema, %{"age" => nil, "name" => "Dmitry"})
   end
+
+  test "#errors - with required one of many fields" do
+    schema =
+      map(
+        fields: [
+          field(key: "name", type: string(), if_any: true),
+          field(key: "age", type: integer(gteq: 18), if_any: true)
+        ]
+      )
+
+    assert %{"age" => ["one of keys should exist"], "name" => ["one of keys should exist"]} =
+             MapType.errors(schema, %{})
+
+    assert %{
+             "name" => _error_message
+           } = MapType.errors(schema, %{"age" => nil})
+
+    assert %{
+             "name" => ["nil", "should be StringType"],
+             "age" => ["nil", "should be integer type"]
+           } ==
+             MapType.errors(schema, %{"age" => nil, "name" => nil})
+
+    assert %{
+             "name" => ["nil", "should be StringType"],
+             "age" => ["nil", "should be integer type"]
+           } == MapType.errors(schema, %{"name" => nil})
+
+    assert %{} == MapType.errors(schema, %{"age" => 18, "name" => "Dmitry"})
+    assert %{} == MapType.errors(schema, %{"name" => "Dmitry"})
+    assert %{} == MapType.errors(schema, %{"name" => nil, "age" => 21})
+  end
 end
