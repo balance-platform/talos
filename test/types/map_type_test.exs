@@ -11,7 +11,7 @@ defmodule Talos.Types.MapTypeTest do
     assert false == MapType.valid?(map(), "e")
     assert false == MapType.valid?(map(), "z")
     assert true == MapType.valid?(map(allow_nil: true), nil)
-    assert true == MapType.valid?(map(), %{})
+    assert true == MapType.valid?(map(allow_blank: true), %{})
     assert true == MapType.valid?(map(), %{a: 3, b: 4})
   end
 
@@ -33,7 +33,7 @@ defmodule Talos.Types.MapTypeTest do
     assert ["0", _error_message] = MapType.errors(map(), 0)
     assert ["\"e\"", _error_message] = MapType.errors(map(), "e")
     assert ["\"z\"", _error_message] = MapType.errors(map(), "z")
-    assert %{} == MapType.errors(map(), %{})
+    assert %{} == MapType.errors(map(allow_blank: true), %{})
     assert %{} == MapType.errors(map(), %{a: 3, b: 4})
   end
 
@@ -160,23 +160,23 @@ defmodule Talos.Types.MapTypeTest do
              "middlename" => ["should exist"]
            } ==
              MapType.errors(schema, %{
-               "lastname" => "Лорка",
-               "firstname" => "Федерико"
+               "lastname" => "Lorca",
+               "firstname" => "Federico"
              })
 
     assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
              MapType.errors(schema, %{
                "lastname" => "",
                "firstname" => nil,
-               "middlename" => "Гарсия",
+               "middlename" => "Garcia",
                "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Лорка",
-               "firstname" => "Федерико",
-               "middlename" => "Гарсия",
+               "lastname" => "Lorca",
+               "firstname" => "Federico",
+               "middlename" => "Garcia",
                "birthdate" => "1898-06-05"
              })
   end
@@ -211,7 +211,13 @@ defmodule Talos.Types.MapTypeTest do
         ]
       )
 
-    assert ["one of keys should exist"] = MapType.errors(schema, %{})
+    assert %{
+             "birthdate" => ["should exist"],
+             "firstname" => ["should exist"],
+             "inn" => ["should exist"],
+             "lastname" => ["should exist"]
+           } = MapType.errors(schema, %{})
+
     assert %{} == MapType.errors(schema, %{"inn" => "3015081111"})
 
     assert %{
@@ -224,8 +230,8 @@ defmodule Talos.Types.MapTypeTest do
            } ==
              MapType.errors(schema, %{
                "inn" => "3015081111",
-               "lastname" => "Лорка",
-               "firstname" => "Федерико"
+               "lastname" => "Lorca",
+               "firstname" => "Federico"
              })
 
     assert %{
@@ -233,30 +239,30 @@ defmodule Talos.Types.MapTypeTest do
              "lastname" => ["all dependens_on fields should exist"]
            } ==
              MapType.errors(schema, %{
-               "lastname" => "Лорка",
-               "firstname" => "Федерико"
+               "lastname" => "Lorca",
+               "firstname" => "Federico"
              })
 
     assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
              MapType.errors(schema, %{
                "lastname" => "",
                "firstname" => nil,
-               "middlename" => "Гарсия",
+               "middlename" => "Garcia",
                "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Лорка",
-               "firstname" => "Федерико",
-               "middlename" => "Гарсия",
+               "lastname" => "Lorca",
+               "firstname" => "Federico",
+               "middlename" => "Garcia",
                "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Лорка",
-               "firstname" => "Федерико",
+               "lastname" => "Lorca",
+               "firstname" => "Federico",
                "birthdate" => "1898-06-05"
              })
   end
