@@ -83,19 +83,20 @@ defmodule Talos.Types.MapType do
     end
   end
 
-  def errors(%__MODULE__{fields: fields, required_groups: list, allow_blank: false}, map) when is_list(list) do
+  def errors(%__MODULE__{fields: fields, required_groups: list, allow_blank: false}, map)
+      when is_list(list) do
     keys = Map.keys(map)
 
     if Enum.empty?(keys) do
-        ["one of keys should exist"]
+      ["one of keys should exist"]
     else
-        # проверить поля из required_groups
-        list
-        |> Enum.filter(fn key -> Enum.member?(keys, key) end)
-        |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
-        |> Enum.map(fn field -> field_errors(field, map) end)
-        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-        |> Map.new()
+      # проверить поля из required_groups
+      list
+      |> Enum.filter(fn key -> Enum.member?(keys, key) end)
+      |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
+      |> Enum.map(fn field -> field_errors(field, map) end)
+      |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+      |> Map.new()
     end
   end
 

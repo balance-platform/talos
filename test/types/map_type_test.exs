@@ -229,13 +229,13 @@ defmodule Talos.Types.MapTypeTest do
              })
 
     assert %{
-              "firstname" => ["all dependens_on fields should exist"],
-              "lastname" => ["all dependens_on fields should exist"]
-            } ==
-              MapType.errors(schema, %{
-                "lastname" => "Лорка",
-                "firstname" => "Федерико"
-              })
+             "firstname" => ["all dependens_on fields should exist"],
+             "lastname" => ["all dependens_on fields should exist"]
+           } ==
+             MapType.errors(schema, %{
+               "lastname" => "Лорка",
+               "firstname" => "Федерико"
+             })
 
     assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
              MapType.errors(schema, %{
