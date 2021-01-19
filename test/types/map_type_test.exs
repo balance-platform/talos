@@ -151,7 +151,7 @@ defmodule Talos.Types.MapTypeTest do
              "lastname" => ["should exist"],
              "middlename" => ["should exist"],
              "birthdate" => ["all dependens_on fields should exist"]
-           } == MapType.errors(schema, %{"birthdate" => "1991-12-23"})
+           } == MapType.errors(schema, %{"birthdate" => "1898-06-05"})
 
     assert %{
              "birthdate" => ["should exist"],
@@ -160,30 +160,31 @@ defmodule Talos.Types.MapTypeTest do
              "middlename" => ["should exist"]
            } ==
              MapType.errors(schema, %{
-               "lastname" => "Минаев",
-               "firstname" => "Константин"
+               "lastname" => "Лорка",
+               "firstname" => "Федерико"
              })
 
     assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
              MapType.errors(schema, %{
                "lastname" => "",
                "firstname" => nil,
-               "middlename" => "Геннадьевич",
-               "birthdate" => "1991-12-23"
+               "middlename" => "Гарсия",
+               "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Минаев",
-               "firstname" => "Константин",
-               "middlename" => "Геннадьевич",
-               "birthdate" => "1991-12-23"
+               "lastname" => "Лорка",
+               "firstname" => "Федерико",
+               "middlename" => "Гарсия",
+               "birthdate" => "1898-06-05"
              })
   end
 
   test "@errors - depends_on, fio + birthdate with optional middlename" do
     schema =
       map(
+        required_groups: ["inn", "lastname", "firstname", "birthdate"],
         fields: [
           field(
             key: "lastname",
@@ -205,53 +206,58 @@ defmodule Talos.Types.MapTypeTest do
             key: "birthdate",
             type: string(),
             depends_on: ["lastname", "firstname"]
-          )
+          ),
+          field(key: "inn", type: string())
         ]
       )
 
-    assert %{
-             "firstname" => ["should exist"],
-             "lastname" => ["should exist"],
-             "birthdate" => ["should exist"]
-           } = MapType.errors(schema, %{})
+    assert ["one of keys should exist"] = MapType.errors(schema, %{})
+    assert %{} == MapType.errors(schema, %{"inn" => "3015081111"})
 
     assert %{
-             "firstname" => ["should exist"],
-             "lastname" => ["should exist"],
              "birthdate" => ["all dependens_on fields should exist"]
-           } == MapType.errors(schema, %{"birthdate" => "1991-12-23"})
+           } == MapType.errors(schema, %{"birthdate" => "1898-06-05"})
 
     assert %{
-             "birthdate" => ["should exist"],
              "firstname" => ["all dependens_on fields should exist"],
              "lastname" => ["all dependens_on fields should exist"]
            } ==
              MapType.errors(schema, %{
-               "lastname" => "Минаев",
-               "firstname" => "Константин"
+               "inn" => "3015081111",
+               "lastname" => "Лорка",
+               "firstname" => "Федерико"
              })
+
+    assert %{
+              "firstname" => ["all dependens_on fields should exist"],
+              "lastname" => ["all dependens_on fields should exist"]
+            } ==
+              MapType.errors(schema, %{
+                "lastname" => "Лорка",
+                "firstname" => "Федерико"
+              })
 
     assert %{"firstname" => ["nil", "should be StringType"], "lastname" => ["can not be blank"]} ==
              MapType.errors(schema, %{
                "lastname" => "",
                "firstname" => nil,
-               "middlename" => "Геннадьевич",
-               "birthdate" => "1991-12-23"
+               "middlename" => "Гарсия",
+               "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Минаев",
-               "firstname" => "Константин",
-               "middlename" => "Геннадьевич",
-               "birthdate" => "1991-12-23"
+               "lastname" => "Лорка",
+               "firstname" => "Федерико",
+               "middlename" => "Гарсия",
+               "birthdate" => "1898-06-05"
              })
 
     assert %{} ==
              MapType.errors(schema, %{
-               "lastname" => "Минаев",
-               "firstname" => "Константин",
-               "birthdate" => "1991-12-23"
+               "lastname" => "Лорка",
+               "firstname" => "Федерико",
+               "birthdate" => "1898-06-05"
              })
   end
 
