@@ -116,7 +116,11 @@ defmodule Talos.Types.MapType do
         ["one of keys should exist"]
 
       any_one == true && has_values(map) ->
-        %{}
+        keys
+        |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
+        |> Enum.map(fn field -> field_errors(field, map) end)
+        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+        |> Map.new()
 
       is_list(groups) && Enum.empty?(groups) ->
         ["list should have value"]
