@@ -7,7 +7,7 @@ defmodule Talos.Types.MapType do
       * `required_any_one`: true/false, if true - validation check if map has any valid field
       * `required_groups`: list("key1", "key2", ...), list of keys from required group,
        required group can be simple field or field with dependendencies,
-       it is enough to specify one field from the group to check all dependencies
+       you need to specify all field from the group to check dependencies
 
   Fields are tuples `{key, type, options \\ []}`:
 
@@ -117,10 +117,8 @@ defmodule Talos.Types.MapType do
 
       any_one == true && has_values(map) ->
         keys
-        |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
-        |> Enum.map(fn field -> field_errors(field, map) end)
-        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-        |> Map.new()
+        |> fields_by_key(fields)
+        |> find_field_errors(map)
 
       is_list(groups) && Enum.empty?(groups) ->
         ["list should have value"]
@@ -128,17 +126,24 @@ defmodule Talos.Types.MapType do
       is_list(groups) && !Enum.empty?(groups) && !Enum.empty?(keys) ->
         groups
         |> Enum.filter(fn key -> Enum.member?(keys, key) end)
-        |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
-        |> Enum.map(fn field -> field_errors(field, map) end)
-        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-        |> Map.new()
+        |> fields_by_key(fields)
+        |> find_field_errors(map)
 
       true ->
         (fields || [])
-        |> Enum.map(fn field -> field_errors(field, map) end)
-        |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
-        |> Map.new()
+        |> find_field_errors(map)
     end
+  end
+
+  defp fields_by_key(keys, fields) do
+    Enum.map(keys, fn key -> Enum.find(fields, &(&1.key == key)) end)
+  end
+
+  defp find_field_errors(fields, map) do
+    fields
+    |> Enum.map(fn field -> field_errors(field, map) end)
+    |> Enum.reject(fn {_key, errors} -> errors == [] || errors == %{} end)
+    |> Map.new()
   end
 
   defp has_values(map) do
@@ -168,12 +173,10 @@ defmodule Talos.Types.MapType do
         map = value
 
         Enum.reduce(fields, %{}, fn %Field{key: key, type: type}, acc ->
-          case Map.has_key?(value, key) do
-            true ->
-              Map.put(acc, key, Talos.permit(type, map[key]))
-
-            false ->
-              acc
+          if Map.has_key?(value, key) do
+            Map.put(acc, key, Talos.permit(type, map[key]))
+          else
+            acc
           end
         end)
 
