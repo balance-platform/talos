@@ -5,6 +5,7 @@
 [![hex.pm](https://img.shields.io/hexpm/dt/talos.svg)](https://hex.pm/packages/talos)
 [![hex.pm](https://img.shields.io/hexpm/l/talos.svg)](https://hex.pm/packages/talos)
 [![github.com](https://img.shields.io/github/last-commit/balance-platform/talos.svg)](https://github.com/balance-platform/talos/commits/master)
+![Elixir CI](https://github.com/balance-platform/talos/workflows/Elixir%20CI/badge.svg)
 
 Talos is simple parameters validation library
 
