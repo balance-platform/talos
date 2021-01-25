@@ -91,6 +91,10 @@ defmodule Talos do
     talos_build_struct(%Talos.Types.EnumType{}, args)
   end
 
+  def any(args \\ []) when is_list(args) do
+    talos_build_struct(%Talos.Types.AnyType{}, args)
+  end
+
   def boolean(args \\ []) when is_list(args) do
     talos_build_struct(%Talos.Types.BooleanType{}, args)
   end
