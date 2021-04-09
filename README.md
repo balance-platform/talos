@@ -92,7 +92,7 @@ Talos.valid?(%ZipCodeType{}, 123456) # => false
 ```elixir
 def deps do
   [
-    {:talos, "~> 1.7"}
+    {:talos, "~> 1.11"}
   ]
 end
 ```
