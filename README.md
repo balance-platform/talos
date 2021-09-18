@@ -17,6 +17,10 @@ I needed more checks than just whether the value belonged to a particular data t
 
 This library allows you to define your own checks and use typical checks with a simple setup.
 
+## Flow
+
+![](/.github/images/main_steps.png)
+
 ## Usage
 
 ```elixir
