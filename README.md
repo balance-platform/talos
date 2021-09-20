@@ -17,28 +17,24 @@ I needed more checks than just whether the value belonged to a particular data t
 
 This library allows you to define your own checks and use typical checks with a simple setup.
 
-## Flow
-
-![](/.github/images/main_steps.png)
-
 ## Usage
 
 ```elixir
-  defmodule CheckUserJSON do
+  defmodule CheckUserSignUp do
     import Talos
 
-    @interests_type enum(members: ["sports", "games", "food"])
-    @user map(fields: [
+    @schema map(fields: [
+      field(key: "action", type: const(value: "sign-up")),
       field(key: "email", type: string(min_length: 5, max_length: 255, regexp: ~r/.*@.*/)),
-      field(key: "age", type: integer(gteq: 18, allow_nil: true)),
-      field(key: "interests", type: list(type: @interests_type), optional: true)
+      field(key: "age", type: integer(gteq: 18, allow_nil: true))
     ])
 
     def validate(%{} = map_data) do
-      errors = Talos.errors(@user, map_data)
+      params = Talos.permit(map_data)
+      errors = Talos.errors(@schema, params)
 
       case errors == %{} do
-        true -> :ok
+        true -> {:ok, params}
         false -> {:error, errors}
       end
     end
@@ -50,18 +46,22 @@ Somewhere in UserController
 
   ...
 
-  def new_user(conn, params)
-    case CheckUserJSON.valid?(params) do
+  def sign_up(conn, params)
+    case CheckUserSignUp.valid?(params) do
        :ok -> 
           result = MyApp.register_user!(params)
           render_json(%{"ok" => true)
        {:error, errors} -> 
-          render_json_errors(errors)
+          render_errors(errors)
     end
   end
   
   ...
 ```
+
+## Flow
+
+![](/.github/images/main_steps.png)
 
 ## Own Type definition
 
@@ -96,7 +96,7 @@ Talos.valid?(%ZipCodeType{}, 123456) # => false
 ```elixir
 def deps do
   [
-    {:talos, "~> 1.11"}
+    {:talos, "~> 1.12"}
   ]
 end
 ```
