@@ -8,6 +8,7 @@ defmodule TalosTest do
   alias Talos.Types.EnumType
   alias Talos.Types.NumberType
   alias Talos.Types.StringType
+  alias Talos.Types.ConstType
   import Talos
 
   @interests_type %EnumType{
@@ -99,6 +100,11 @@ defmodule TalosTest do
     test "StringType" do
       assert %StringType{} = string()
       assert %StringType{max_length: 3} = string(max_length: 3)
+    end
+
+    test "ConstType" do
+      assert %ConstType{} = const()
+      assert %ConstType{value: 3} = const(value: 3)
     end
 
     test "ListType" do
