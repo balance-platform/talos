@@ -50,7 +50,7 @@ Somewhere in UserController
     case CheckUserSignUp.valid?(params) do
        :ok -> 
           result = MyApp.register_user!(params)
-          render_json(%{"ok" => true)
+          render_json(%{"ok" => true | result})
        {:error, errors} -> 
           render_errors(errors)
     end
