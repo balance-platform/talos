@@ -5,7 +5,7 @@ defmodule Talos.Types.ConstType do
   defstruct value: nil, description: nil
   @behaviour Talos.Types
 
-  @type t :: %__MODULE__{value: any}
+  @type t :: %__MODULE__{value: any, description: binary()}
 
   def valid?(%__MODULE__{value: value_expected}, value) do
     case value_expected == value do

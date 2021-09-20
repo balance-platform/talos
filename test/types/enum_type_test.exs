@@ -48,7 +48,7 @@ defmodule Talos.Types.EnumTypeTest do
 
     assert [] == EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "e")
 
-    assert errors = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
+    assert _errors = EnumType.errors(%EnumType{members: ["a", "b", "c", "d", "e"]}, "z")
 
     assert [] ==
              EnumType.errors(
