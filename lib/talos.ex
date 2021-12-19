@@ -2,6 +2,7 @@ defmodule Talos do
   alias Talos.Types.MapType
   alias Talos.Types.MapType.Field
   alias Talos.Types.ListType
+  alias Talos.Types.EnumType
 
   @moduledoc """
   Documentation for Talos.
@@ -49,11 +50,15 @@ defmodule Talos do
     module.valid?(module, value)
   end
 
-  @spec permit(struct | module, any) :: boolean
+  @doc """
+  Reduces `data` to what is defined in it's type.
+  """
+  @spec permit(struct | module, any) :: any
   def permit(%{__struct__: type_module} = data_type, data) do
     case type_module do
       MapType -> MapType.permit(data_type, data)
       ListType -> ListType.permit(data_type, data)
+      EnumType -> EnumType.permit(data_type, data)
       _another -> data
     end
   end

@@ -83,6 +83,7 @@ defmodule Talos.Types.ListType do
     end
   end
 
+  @spec permit(Talos.Types.ListType.t(), any) :: any
   def permit(%__MODULE__{allow_nil: true}, nil) do
     nil
   end
