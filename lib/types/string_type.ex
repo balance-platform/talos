@@ -69,7 +69,7 @@ defmodule Talos.Types.StringType do
         value
       ) do
     errors =
-      case String.valid?(value) do
+      case is_binary(value) && String.valid?(value) do
         true ->
           str_len = String.length(value)
 
