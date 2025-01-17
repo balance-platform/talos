@@ -136,7 +136,9 @@ defmodule Talos.Types.MapType do
   end
 
   defp fields_by_key(keys, fields) do
-    Enum.map(keys, fn key -> Enum.find(fields, &(&1.key == key)) end)
+    keys
+    |> Enum.map(fn key -> Enum.find(fields, &(&1.key == key)) end)
+    |> Enum.filter(&(!is_nil(&1)))
   end
 
   defp find_field_errors(fields, map) do

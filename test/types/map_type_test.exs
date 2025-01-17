@@ -301,4 +301,18 @@ defmodule Talos.Types.MapTypeTest do
     assert %{} == MapType.errors(schema, %{"name" => "Dmitry"})
     assert %{} == MapType.errors(schema, %{"age" => 88})
   end
+
+  test "#errors - with required_any_one = true and unexpected keys" do
+    schema =
+      map(
+        required_any_one: true,
+        fields: [
+          field(key: "name", type: string()),
+          field(key: "age", type: integer(gteq: 18))
+        ]
+      )
+
+    assert %{} ==
+             MapType.errors(schema, %{"age" => 18, "unexpected" => true})
+  end
 end
